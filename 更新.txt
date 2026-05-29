@@ -1,0 +1,71 @@
+## 项目：基于EMA均线形态的股票筛选工具（Baostock版）
+
+### 一、重要说明
+由于网络限制，无法使用 Tushare 和 akshare 的 EastMoney 接口。
+**必须使用 Baostock 作为数据源**（无需注册，完全免费）。
+
+### 二、核心筛选条件
+[你原来的条件A/B/C，保持不变]
+
+### 三、技术实现要求
+
+| 项目 | 要求 |
+|------|------|
+| 语言 | Python 3.10+ |
+| 框架 | Streamlit |
+| 数据源 | **Baostock**（唯一） |
+| 计算 | pandas 向量化计算 |
+| 图表 | plotly |
+| 缓存 | SQLite |
+
+### 四、Baostock 数据获取代码
+
+```python
+import baostock as bs
+import pandas as pd
+
+@st.cache_data(ttl=3600)
+def fetch_stock_data_baostock(code, start_date, end_date):
+    """
+    使用 Baostock 获取日线数据
+    
+    Args:
+        code: 原始代码，如 '000001.SZ'
+        start_date: 'YYYY-MM-DD'
+        end_date: 'YYYY-MM-DD'
+    """
+    # 转换代码格式
+    if code.endswith('.SH') or code.startswith('6'):
+        bs_code = f"sh.{code[:6]}"
+    else:
+        bs_code = f"sz.{code[:6]}"
+    
+    # 登录
+    bs.login()
+    
+    # 查询数据
+    rs = bs.query_history_k_data_plus(
+        bs_code,
+        "date,open,high,low,close,volume",
+        start_date=start_date,
+        end_date=end_date,
+        frequency="d",
+        adjustflag="2"  # 前复权
+    )
+    
+    # 转为 DataFrame
+    data_list = []
+    while rs.next():
+        data_list.append(rs.get_row_data())
+    
+    bs.logout()
+    
+    if not data_list:
+        return None
+    
+    df = pd.DataFrame(data_list, columns=['date', 'open', 'high', 'low', 'close', 'volume'])
+    for col in ['open', 'high', 'low', 'close', 'volume']:
+        df[col] = pd.to_numeric(df[col])
+    df['date'] = pd.to_datetime(df['date'])
+    
+    return df

@@ -1,0 +1,251 @@
+2026-05-29 13:30:33,688 - WARNING - baostock stock list failed: query_all_stock returned empty result, using built-in list
+2026-05-29 16:06:03,007 - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Users\14132\AppData\Local\Programs\Python\Python314\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\14132\AppData\Local\Programs\Python\Python314\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+2026-05-29 17:04:41,275 - WARNING - 数据不足 (仅28天): 301666 大普微
+2026-05-29 17:04:41.276841 - 数据不足 (仅28天): 301666 大普微
+2026-05-29 17:04:42,144 - WARNING - 数据不足 (仅43天): 301682 宏明电子
+2026-05-29 17:04:42.144847 - 数据不足 (仅43天): 301682 宏明电子
+2026-05-29 17:04:43,087 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:04:43.088615 - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:04:43,869 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:04:43.869915 - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:15:18,228 - WARNING - baostock query failed for 000001: 网络接收错误。
+2026-05-29 17:15:18,230 - WARNING - baostock query failed for 600000: 网络接收错误。
+2026-05-29 17:15:18,232 - WARNING - baostock query failed for 600015: 网络接收错误。
+2026-05-29 17:15:18,233 - WARNING - baostock query failed for 600016: 网络接收错误。
+2026-05-29 17:15:18,233 - WARNING - baostock query failed for 600036: 网络接收错误。
+2026-05-29 17:15:18,234 - WARNING - baostock query failed for 601009: 网络接收错误。
+2026-05-29 17:15:18,235 - WARNING - baostock query failed for 601166: 网络接收错误。
+2026-05-29 17:15:18,236 - WARNING - baostock query failed for 601288: 网络接收错误。
+2026-05-29 17:15:18,236 - WARNING - baostock query failed for 601328: 网络接收错误。
+2026-05-29 17:15:18,237 - WARNING - baostock query failed for 601398: 网络接收错误。
+2026-05-29 17:15:18,238 - WARNING - baostock query failed for 601818: 网络接收错误。
+2026-05-29 17:15:18,239 - WARNING - baostock query failed for 601939: 网络接收错误。
+2026-05-29 17:15:18,240 - WARNING - baostock query failed for 601988: 网络接收错误。
+2026-05-29 17:15:18,240 - WARNING - baostock query failed for 002142: 网络接收错误。
+2026-05-29 17:15:18,241 - WARNING - baostock query failed for 601658: 网络接收错误。
+2026-05-29 17:15:18,242 - WARNING - baostock query failed for 600919: 网络接收错误。
+2026-05-29 17:15:18,243 - WARNING - baostock query failed for 601998: 网络接收错误。
+2026-05-29 17:15:18,243 - WARNING - baostock query failed for 601825: 网络接收错误。
+2026-05-29 17:15:18,244 - WARNING - baostock query failed for 601838: 网络接收错误。
+2026-05-29 17:15:18,245 - WARNING - baostock query failed for 601916: 网络接收错误。
+2026-05-29 17:15:18,245 - WARNING - baostock query failed for 601077: 网络接收错误。
+2026-05-29 17:15:18,246 - WARNING - baostock query failed for 601577: 网络接收错误。
+2026-05-29 17:15:18,247 - WARNING - baostock query failed for 601665: 网络接收错误。
+2026-05-29 17:15:18,247 - WARNING - baostock query failed for 601997: 网络接收错误。
+2026-05-29 17:15:18,248 - WARNING - baostock query failed for 601963: 网络接收错误。
+2026-05-29 17:15:18,249 - WARNING - baostock query failed for 601128: 网络接收错误。
+2026-05-29 17:15:18,249 - WARNING - baostock query failed for 601187: 网络接收错误。
+2026-05-29 17:15:18,250 - WARNING - baostock query failed for 600908: 网络接收错误。
+2026-05-29 17:15:18,251 - WARNING - baostock query failed for 002966: 网络接收错误。
+2026-05-29 17:15:18,252 - WARNING - baostock query failed for 002958: 网络接收错误。
+2026-05-29 17:15:18,253 - WARNING - baostock query failed for 001227: 网络接收错误。
+2026-05-29 17:15:18,253 - WARNING - baostock query failed for 002936: 网络接收错误。
+2026-05-29 17:15:18,254 - WARNING - baostock query failed for 002948: 网络接收错误。
+2026-05-29 17:15:18,255 - WARNING - baostock query failed for 002807: 网络接收错误。
+2026-05-29 17:15:18,256 - WARNING - baostock query failed for 002839: 网络接收错误。
+2026-05-29 17:15:18,256 - WARNING - baostock query failed for 600928: 网络接收错误。
+2026-05-29 17:15:18,256 - WARNING - baostock query failed for 601860: 网络接收错误。
+2026-05-29 17:15:18,257 - WARNING - baostock query failed for 601528: 网络接收错误。
+2026-05-29 17:15:18,257 - WARNING - baostock query failed for 603323: 网络接收错误。
+2026-05-29 17:15:18,258 - WARNING - baostock query failed for 601229: 网络接收错误。
+2026-05-29 17:15:18,258 - WARNING - baostock query failed for 601169: 网络接收错误。
+2026-05-29 17:15:18,259 - WARNING - baostock query failed for 601318: 网络接收错误。
+2026-05-29 17:15:18,260 - WARNING - baostock query failed for 601601: 网络接收错误。
+2026-05-29 17:15:18,261 - WARNING - baostock query failed for 601628: 网络接收错误。
+2026-05-29 17:15:18,261 - WARNING - baostock query failed for 601336: 网络接收错误。
+2026-05-29 17:15:18,262 - WARNING - baostock query failed for 601319: 网络接收错误。
+2026-05-29 17:15:18,263 - WARNING - baostock query failed for 600030: 网络接收错误。
+2026-05-29 17:15:18,264 - WARNING - baostock query failed for 600837: 网络接收错误。
+2026-05-29 17:15:18,265 - WARNING - baostock query failed for 600958: 网络接收错误。
+2026-05-29 17:15:18,266 - WARNING - baostock query failed for 600999: 网络接收错误。
+2026-05-29 17:15:18,266 - WARNING - baostock query failed for 601066: 网络接收错误。
+2026-05-29 17:15:18,267 - WARNING - baostock query failed for 601211: 网络接收错误。
+2026-05-29 17:15:18,267 - WARNING - baostock query failed for 601375: 网络接收错误。
+2026-05-29 17:15:18,268 - WARNING - baostock query failed for 601688: 网络接收错误。
+2026-05-29 17:15:18,269 - WARNING - baostock query failed for 601881: 网络接收错误。
+2026-05-29 17:15:18,270 - WARNING - baostock query failed for 601788: 网络接收错误。
+2026-05-29 17:15:18,270 - WARNING - baostock query failed for 601059: 网络接收错误。
+2026-05-29 17:15:18,271 - WARNING - baostock query failed for 601901: 网络接收错误。
+2026-05-29 17:15:18,272 - WARNING - baostock query failed for 601377: 网络接收错误。
+2026-05-29 17:15:18,272 - WARNING - baostock query failed for 601198: 网络接收错误。
+2026-05-29 17:15:18,273 - WARNING - baostock query failed for 601878: 网络接收错误。
+2026-05-29 17:15:18,274 - WARNING - baostock query failed for 601136: 网络接收错误。
+2026-05-29 17:15:18,274 - WARNING - baostock query failed for 002945: 网络接收错误。
+2026-05-29 17:15:18,275 - WARNING - baostock query failed for 601555: 网络接收错误。
+2026-05-29 17:15:18,276 - WARNING - baostock query failed for 601456: 网络接收错误。
+2026-05-29 17:15:18,277 - WARNING - baostock query failed for 601108: 网络接收错误。
+2026-05-29 17:15:18,278 - WARNING - baostock query failed for 600909: 网络接收错误。
+2026-05-29 17:15:18,278 - WARNING - baostock query failed for 601236: 网络接收错误。
+2026-05-29 17:15:18,279 - WARNING - baostock query failed for 600109: 网络接收错误。
+2026-05-29 17:15:18,280 - WARNING - baostock query failed for 601696: 网络接收错误。
+2026-05-29 17:15:18,281 - WARNING - baostock query failed for 000728: 网络接收错误。
+2026-05-29 17:15:18,282 - WARNING - baostock query failed for 002939: 网络接收错误。
+2026-05-29 17:15:18,283 - WARNING - baostock query failed for 002673: 网络接收错误。
+2026-05-29 17:15:18,283 - WARNING - baostock query failed for 002797: 网络接收错误。
+2026-05-29 17:15:18,284 - WARNING - baostock query failed for 601162: 网络接收错误。
+2026-05-29 17:15:18,285 - WARNING - baostock query failed for 600369: 网络接收错误。
+2026-05-29 17:15:18,286 - WARNING - baostock query failed for 601990: 网络接收错误。
+2026-05-29 17:15:18,287 - WARNING - baostock query failed for 600918: 网络接收错误。
+2026-05-29 17:15:18,288 - WARNING - baostock query failed for 000166: 网络接收错误。
+2026-05-29 17:15:18,289 - WARNING - baostock query failed for 000776: 网络接收错误。
+2026-05-29 17:15:18,289 - WARNING - baostock query failed for 002736: 网络接收错误。
+2026-05-29 17:15:18,290 - WARNING - baostock query failed for 601995: 网络接收错误。
+2026-05-29 17:15:18,291 - WARNING - baostock query failed for 600906: 网络接收错误。
+2026-05-29 17:15:18,292 - WARNING - baostock query failed for 000750: 网络接收错误。
+2026-05-29 17:15:18,293 - WARNING - baostock query failed for 002926: 网络接收错误。
+2026-05-29 17:15:18,293 - WARNING - baostock query failed for 002500: 网络接收错误。
+2026-05-29 17:15:18,294 - WARNING - baostock query failed for 000686: 网络接收错误。
+2026-05-29 17:15:18,294 - WARNING - baostock query failed for 600621: 网络接收错误。
+2026-05-29 17:15:18,295 - WARNING - baostock query failed for 000783: 网络接收错误。
+2026-05-29 17:15:18,296 - WARNING - baostock query failed for 600061: 网络接收错误。
+2026-05-29 17:15:18,297 - WARNING - baostock query failed for 601099: 网络接收错误。
+2026-05-29 17:15:18,298 - WARNING - baostock query failed for 601456: 网络接收错误。
+2026-05-29 17:15:18,298 - WARNING - baostock query failed for 600909: 网络接收错误。
+2026-05-29 17:15:18,299 - WARNING - baostock query failed for 002670: 网络接收错误。
+2026-05-29 17:15:18,300 - WARNING - baostock query failed for 000987: 网络接收错误。
+2026-05-29 17:15:18,300 - WARNING - baostock query failed for 002797: 网络接收错误。
+2026-05-29 17:15:18,301 - WARNING - baostock query failed for 601375: 网络接收错误。
+2026-05-29 17:15:18,302 - WARNING - baostock query failed for 601878: 网络接收错误。
+2026-05-29 17:15:18,303 - WARNING - baostock query failed for 601990: 网络接收错误。
+2026-05-29 17:15:18,304 - WARNING - baostock query failed for 600918: 网络接收错误。
+2026-05-29 17:15:18,305 - WARNING - baostock query failed for 600095: 网络接收错误。
+2026-05-29 17:15:18,306 - WARNING - baostock query failed for 601456: 网络接收错误。
+2026-05-29 17:15:18,307 - WARNING - baostock query failed for 002939: 网络接收错误。
+2026-05-29 17:15:18,308 - WARNING - baostock query failed for 601236: 网络接收错误。
+2026-05-29 17:15:18,309 - WARNING - baostock query failed for 601059: 网络接收错误。
+2026-05-29 17:15:18,310 - WARNING - baostock query failed for 601136: 网络接收错误。
+2026-05-29 17:15:18,311 - WARNING - baostock query failed for 601881: 网络接收错误。
+2026-05-29 17:15:18,311 - WARNING - baostock query failed for 601066: 网络接收错误。
+2026-05-29 17:15:18,312 - WARNING - baostock query failed for 601211: 网络接收错误。
+2026-05-29 17:15:18,314 - WARNING - baostock query failed for 000568: 网络接收错误。
+2026-05-29 17:15:18,315 - WARNING - baostock query failed for 000858: 网络接收错误。
+2026-05-29 17:15:18,317 - WARNING - baostock query failed for 600519: 网络接收错误。
+2026-05-29 17:15:18,318 - WARNING - baostock query failed for 600809: 网络接收错误。
+2026-05-29 17:15:18,320 - WARNING - baostock query failed for 002304: 网络接收错误。
+2026-05-29 17:15:18,324 - WARNING - baostock query failed for 000596: 网络接收错误。
+2026-05-29 17:15:18,326 - WARNING - baostock query failed for 603369: 网络接收错误。
+2026-05-29 17:15:18,328 - WARNING - baostock query failed for 603198: 网络接收错误。
+2026-05-29 17:15:18,330 - WARNING - baostock query failed for 600779: 网络接收错误。
+2026-05-29 17:15:18,332 - WARNING - baostock query failed for 603919: 网络接收错误。
+2026-05-29 17:15:18,333 - WARNING - baostock query failed for 600559: 网络接收错误。
+2026-05-29 17:15:18,334 - WARNING - baostock query failed for 000799: 网络接收错误。
+2026-05-29 17:15:18,335 - WARNING - baostock query failed for 600702: 网络接收错误。
+2026-05-29 17:15:18,336 - WARNING - baostock query failed for 603198: 网络接收错误。
+2026-05-29 17:15:18,337 - WARNING - baostock query failed for 603589: 网络接收错误。
+2026-05-29 17:15:18,338 - WARNING - baostock query failed for 600199: 网络接收错误。
+2026-05-29 17:15:18,339 - WARNING - baostock query failed for 600197: 网络接收错误。
+2026-05-29 17:15:18,340 - WARNING - baostock query failed for 600059: 网络接收错误。
+2026-05-29 17:15:18,341 - WARNING - baostock query failed for 600600: 网络接收错误。
+2026-05-29 17:15:18,342 - WARNING - baostock query failed for 000729: 网络接收错误。
+2026-05-29 17:15:18,343 - WARNING - baostock query failed for 000752: 网络接收错误。
+2026-05-29 17:15:18,344 - WARNING - baostock query failed for 002461: 网络接收错误。
+2026-05-29 17:15:18,345 - WARNING - baostock query failed for 000929: 网络接收错误。
+2026-05-29 17:15:18,346 - WARNING - baostock query failed for 600132: 网络接收错误。
+2026-05-29 17:15:18,347 - WARNING - baostock query failed for 000333: 网络接收错误。
+2026-05-29 17:15:18,348 - WARNING - baostock query failed for 000651: 网络接收错误。
+2026-05-29 17:15:18,349 - WARNING - baostock query failed for 600690: 网络接收错误。
+2026-05-29 17:15:18,349 - WARNING - baostock query failed for 002668: 网络接收错误。
+2026-05-29 17:15:18,350 - WARNING - baostock query failed for 000921: 网络接收错误。
+2026-05-29 17:15:18,351 - WARNING - baostock query failed for 600060: 网络接收错误。
+2026-05-29 17:15:18,352 - WARNING - baostock query failed for 002959: 网络接收错误。
+2026-05-29 17:15:18,353 - WARNING - baostock query failed for 002508: 网络接收错误。
+2026-05-29 17:15:18,355 - WARNING - baostock query failed for 603868: 网络接收错误。
+2026-05-29 17:15:18,356 - WARNING - baostock query failed for 603355: 网络接收错误。
+2026-05-29 17:15:18,357 - WARNING - baostock query failed for 002032: 网络接收错误。
+2026-05-29 17:15:18,358 - WARNING - baostock query failed for 002242: 网络接收错误。
+2026-05-29 17:15:18,359 - WARNING - baostock query failed for 603515: 网络接收错误。
+2026-05-29 17:15:18,360 - WARNING - baostock query failed for 002705: 网络接收错误。
+2026-05-29 17:15:18,361 - WARNING - baostock query failed for 000810: 网络接收错误。
+2026-05-29 17:15:18,362 - WARNING - baostock query failed for 603551: 网络接收错误。
+2026-05-29 17:15:18,363 - WARNING - baostock query failed for 603657: 网络接收错误。
+2026-05-29 17:15:18,363 - WARNING - baostock query failed for 002543: 网络接收错误。
+2026-05-29 17:15:18,364 - WARNING - baostock query failed for 002429: 网络接收错误。
+2026-05-29 17:15:18,365 - WARNING - baostock query failed for 000521: 网络接收错误。
+2026-05-29 17:15:18,366 - WARNING - baostock query failed for 600336: 网络接收错误。
+2026-05-29 17:15:18,367 - WARNING - baostock query failed for 603579: 网络接收错误。
+2026-05-29 17:15:18,368 - WARNING - baostock query failed for 603868: 网络接收错误。
+2026-05-29 17:15:18,369 - WARNING - baostock query failed for 603515: 网络接收错误。
+2026-05-29 17:15:18,371 - WARNING - baostock query failed for 002614: 网络接收错误。
+2026-05-29 17:15:18,372 - WARNING - baostock query failed for 002242: 网络接收错误。
+2026-05-29 17:15:18,373 - WARNING - baostock query failed for 002508: 网络接收错误。
+2026-05-29 17:15:18,374 - WARNING - baostock query failed for 000538: 网络接收错误。
+2026-05-29 17:15:18,375 - WARNING - baostock query failed for 000963: 网络接收错误。
+2026-05-29 17:15:18,376 - WARNING - baostock query failed for 600085: 网络接收错误。
+2026-05-29 17:15:18,377 - WARNING - baostock query failed for 600196: 网络接收错误。
+2026-05-29 17:15:18,378 - WARNING - baostock query failed for 600276: 网络接收错误。
+2026-05-29 17:15:18,379 - WARNING - baostock query failed for 600332: 网络接收错误。
+2026-05-29 17:15:18,380 - WARNING - baostock query failed for 600436: 网络接收错误。
+2026-05-29 17:15:18,381 - WARNING - baostock query failed for 002001: 网络接收错误。
+2026-05-29 17:15:18,382 - WARNING - baostock query failed for 002007: 网络接收错误。
+2026-05-29 17:15:18,383 - WARNING - baostock query failed for 300760: 网络接收错误。
+2026-05-29 17:15:18,384 - WARNING - baostock query failed for 300122: 网络接收错误。
+2026-05-29 17:15:18,385 - WARNING - baostock query failed for 000999: 网络接收错误。
+2026-05-29 17:15:18,387 - WARNING - baostock query failed for 002422: 网络接收错误。
+2026-05-29 17:15:18,388 - WARNING - baostock query failed for 300015: 网络接收错误。
+2026-05-29 17:15:18,390 - WARNING - baostock query failed for 600521: 网络接收错误。
+2026-05-29 17:15:18,391 - WARNING - baostock query failed for 300759: 网络接收错误。
+2026-05-29 17:15:18,392 - WARNING - baostock query failed for 002821: 网络接收错误。
+2026-05-29 17:15:18,393 - WARNING - baostock query failed for 300347: 网络接收错误。
+2026-05-29 17:15:18,394 - WARNING - baostock query failed for 600161: 网络接收错误。
+2026-05-29 17:15:18,395 - WARNING - baostock query failed for 002252: 网络接收错误。
+2026-05-29 17:15:18,396 - WARNING - baostock query failed for 000513: 网络接收错误。
+2026-05-29 17:15:18,397 - WARNING - baostock query failed for 600062: 网络接收错误。
+2026-05-29 17:15:18,398 - WARNING - baostock query failed for 002603: 网络接收错误。
+2026-05-29 17:15:18,399 - WARNING - baostock query failed for 000423: 网络接收错误。
+2026-05-29 17:15:18,400 - WARNING - baostock query failed for 300896: 网络接收错误。
+2026-05-29 17:15:18,401 - WARNING - baostock query failed for 300601: 网络接收错误。
+2026-05-29 17:15:18,402 - WARNING - baostock query failed for 300558: 网络接收错误。
+2026-05-29 17:15:18,403 - WARNING - baostock query failed for 002262: 网络接收错误。
+2026-05-29 17:15:18,404 - WARNING - baostock query failed for 000739: 网络接收错误。
+2026-05-29 17:15:18,405 - WARNING - baostock query failed for 002020: 网络接收错误。
+2026-05-29 17:15:18,406 - WARNING - baostock query failed for 600535: 网络接收错误。
+2026-05-29 17:15:18,407 - WARNING - baostock query failed for 600867: 网络接收错误。
+2026-05-29 17:15:18,408 - WARNING - baostock query failed for 600566: 网络接收错误。
+2026-05-29 17:15:18,408 - WARNING - baostock query failed for 002038: 网络接收错误。
+2026-05-29 17:15:18,409 - WARNING - baostock query failed for 000661: 网络接收错误。
+2026-05-29 17:15:18,410 - WARNING - baostock query failed for 002773: 网络接收错误。
+2026-05-29 17:15:18,411 - WARNING - baostock query failed for 300142: 网络接收错误。
+2026-05-29 17:15:18,412 - WARNING - baostock query failed for 300122: 网络接收错误。
+2026-05-29 17:15:18,414 - WARNING - baostock query failed for 300601: 网络接收错误。
+2026-05-29 17:15:18,415 - WARNING - baostock query failed for 002007: 网络接收错误。
+2026-05-29 17:32:45,633 - WARNING - 数据不足 (仅28天): 301666 大普微
+2026-05-29 17:32:45.634052 - 数据不足 (仅28天): 301666 大普微
+2026-05-29 17:32:45,754 - WARNING - 数据不足 (仅43天): 301682 宏明电子
+2026-05-29 17:32:45.755319 - 数据不足 (仅43天): 301682 宏明电子
+2026-05-29 17:32:45,889 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:32:45.890586 - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:32:46,040 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:32:46.041192 - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:37:58,495 - WARNING - 数据不足 (仅28天): 301666 大普微
+2026-05-29 17:37:58.495689 - 数据不足 (仅28天): 301666 大普微
+2026-05-29 17:37:59,618 - WARNING - 数据不足 (仅43天): 301682 宏明电子
+2026-05-29 17:37:59.618864 - 数据不足 (仅43天): 301682 宏明电子
+2026-05-29 17:38:00,030 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:38:00.031327 - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:38:00,287 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:38:00.287923 - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:39:48,205 - WARNING - 数据不足 (仅28天): 301666 大普微
+2026-05-29 17:39:48.206112 - 数据不足 (仅28天): 301666 大普微
+2026-05-29 17:39:48,683 - WARNING - 数据不足 (仅43天): 301682 宏明电子
+2026-05-29 17:39:48.684205 - 数据不足 (仅43天): 301682 宏明电子
+2026-05-29 17:39:49,684 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:39:49.685153 - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:39:49,830 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 17:39:49.830915 - 数据不足 (仅32天): 301696 三瑞智能
+2026-05-29 18:54:56,440 - WARNING - 数据不足 (仅29天): 301666 大普微
+2026-05-29 18:54:56.440514 - 数据不足 (仅29天): 301666 大普微
+2026-05-29 18:54:56,576 - WARNING - 数据不足 (仅44天): 301682 宏明电子
+2026-05-29 18:54:56.577330 - 数据不足 (仅44天): 301682 宏明电子
+2026-05-29 18:54:56,730 - WARNING - 数据不足 (仅33天): 301696 三瑞智能
+2026-05-29 18:54:56.731144 - 数据不足 (仅33天): 301696 三瑞智能
+2026-05-29 18:54:56,870 - WARNING - 数据不足 (仅33天): 301696 三瑞智能
+2026-05-29 18:54:56.871047 - 数据不足 (仅33天): 301696 三瑞智能

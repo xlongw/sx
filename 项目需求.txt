@@ -1,0 +1,166 @@
+## 项目：基于EMA均线形态的股票筛选工具
+
+
+### 一、核心筛选条件（请精确实现）
+数据基础：日线数据，至少包含最近120个交易日。EMA计算公式：EMA(N) = 2/(N+1) × 今日收盘价 + (1-2/(N+1)) × 昨日EMA(N)
+
+#### 条件A：首次站上EMA均线
+定义：今日收盘价同时大于 EMA21、EMA55、EMA120，且**昨日**收盘价**不满足**“同时大于三条均线”。
+即：今日是突破性站上三条均线的**第一个交易日**。
+
+#### 条件B：三条均线粘合
+定义：计算 EMA21、EMA55、EMA120 这三条均线当前的**最大值与最小值的比值**：
+   max(EMA21, EMA55, EMA120) / min(EMA21, EMA55, EMA120) <= 1.02
+   （即相差不超过2%，可根据效果调整阈值）
+同时要求：今日收盘价与这三条均线的**平均值**偏离不超过3%。
+
+#### 条件C：均线附近低波动
+定义：股价在 EMA21、EMA55、EMA120 三条均线的附近（偏离 < 2%），且：
+   - 最近5个交易日的ATR(真实波幅均值) / 收盘价 < 0.03（振幅小于3%）
+   - 或：最近5日最高价/最低价比例 < 1.05
+
+### 二、逻辑组合方式
+提供界面让用户选择：
+- “任一条件”（OR）：满足A、B、C之一即可
+- “同时满足”（AND）：需同时满足A和B（或其他组合）
+
+### 三、技术实现要求
+- 语言：Python + Streamlit（请使用该方案，快速实现原型）
+- 数据源：akshare（A股），若akshare不可用则fallback到yfinance
+- 计算要求：向量化计算（pandas），避免逐行循环
+- 对每支股票，输出信号日期、当前价格、三条均线值、偏离度
+
+### 四、股票范围
+- 初始版本：筛选沪深主板股
+- 提供代码输入框，允许用户自定义股票列表（如：000001.SZ,600036.SH）
+
+### 五、数据处理策略
+- 首次启动：从akshare（或者其他可用的数据接口）获取沪深主板股股票最近120个交易日的日线数据
+- 数据缓存到本地SQLite数据库（表名：daily_quotes）
+- 界面提供【刷新数据】按钮，点击后增量更新（只拉取新增交易日）
+- 缓存有效期为当日，每次启动时检查是否需要更新
+
+### 六、性能要求
+- 首次加载+计算300支股票总耗时 < 30秒
+- 筛选条件变更后的重新计算 < 2秒
+- 计算过程中使用st.progress或tqdm显示进度
+
+### 七、界面布局要求（Streamlit）
+左侧边栏：
+  - 逻辑组合：radio选择“任一条件(OR)”或“同时满足(AND)”
+  - 条件A：checkbox（“首次站上三线”），默认勾选
+  - 条件B：checkbox（“均线粘合”）+ 粘合阈值slider（1.01~1.05，默认1.02）
+  - 条件C：checkbox（“低波动”）+ 偏离阈值slider（1%~5%，默认2%）
+  - 【开始筛选】按钮
+  - 【刷新数据】按钮
+
+右侧主区域：
+  - 显示结果数量
+  - 表格展示（股票代码、名称、当前价、EMA21/55/120、触发条件、偏离度）
+  - 点击某行时，下方弹出该股近60日K线图（Plotly或matplotlib）
+  - 【导出CSV】按钮
+
+### 八、错误处理要求
+- 网络异常时：提示“数据获取失败，使用缓存数据”，不崩溃
+- 某支股票数据不足120个交易日：跳过并写入 log.txt
+- 所有try-catch捕获的异常都写入日志
+
+### 九、K线图功能要求（重要）
+
+#### 8.1 触发方式
+- 在右侧结果表格中，**点击任意一行**（或点击该行的【查看K线】按钮），弹出模态框或在该行下方展开K线图
+- 默认显示该股票**最近60个交易日**的K线图
+
+#### 8.2 K线图内容要求
+必须包含以下元素：
+- **蜡烛图**：红涨绿跌（或绿涨红跌，采用国内习惯：红涨绿跌）
+- **三条均线**：EMA21（蓝色）、EMA55（橙色）、EMA120（紫色）
+- **成交量**：在K线图下方以柱状图显示，缩量/放量用不同颜色
+- **标题**：显示“股票代码 + 股票名称 + 当前价 + 触发条件”
+
+#### 8.3 图表交互要求
+- 鼠标悬停时显示：日期、开盘价、收盘价、最高价、最低价、成交量
+- 支持**缩放**（框选放大）和**平移**（拖拽）
+- 右上角提供**重置视图**按钮
+
+#### 8.4 技术实现
+- 使用 **plotly.graph_objects.Candlestick**（推荐，交互性好）
+- 或使用 **mplfinance**（轻量但无交互，不推荐）
+- 均线使用 `add_scatter` 叠加到同一图表
+- 成交量单独使用 `make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.03)`
+
+#### 8.5 标记信号点
+在K线图上标记触发筛选的日期：
+- 条件A（首次站上）：在对应日期K线位置打一个 **绿色向上三角形🔺**
+- 条件B（均线粘合）：打一个**黄色圆形🟡**
+- 条件C（低波动）：打一个**蓝色方形🔹**
+- 如果多个条件同时触发，叠加多个标记
+
+#### 8.6 K线图伪代码参考
+```python
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+def plot_kline_with_emas(df, code, name, signal_date, signal_type):
+    # df 包含: date, open, high, low, close, volume
+    fig = make_subplots(rows=2, cols=1, shared_xaxes=True, 
+                        row_heights=[0.7, 0.3], vertical_spacing=0.03)
+    
+    # 蜡烛图
+    fig.add_trace(go.Candlestick(x=df['date'], open=df['open'], high=df['high'],
+                                  low=df['low'], close=df['close'], name='K线'),
+                  row=1, col=1)
+    
+    # 三条均线
+    fig.add_trace(go.Scatter(x=df['date'], y=df['ema21'], line=dict(color='blue', width=1), name='EMA21'), row=1, col=1)
+    fig.add_trace(go.Scatter(x=df['date'], y=df['ema55'], line=dict(color='orange', width=1), name='EMA55'), row=1, col=1)
+    fig.add_trace(go.Scatter(x=df['date'], y=df['ema120'], line=dict(color='purple', width=1), name='EMA120'), row=1, col=1)
+    
+    # 成交量
+    colors = ['red' if close[i] >= open[i] else 'green' for i in range(len(df))]
+    fig.add_trace(go.Bar(x=df['date'], y=df['volume'], name='成交量', marker_color=colors), row=2, col=1)
+    
+    # 信号标记
+    fig.add_annotation(x=signal_date, y=df[df['date']==signal_date]['high'].values[0]*1.02,
+                       text=signal_type, showarrow=True, arrowhead=2)
+    
+    fig.update_layout(title=f'{code} {name} | 信号日期: {signal_date}', height=600)
+    return fig
+
+
+---
+
+## 🖱️ 补充：表格行点击交互的实现要求
+
+```markdown
+### 十、表格行点击交互（配合K线图）
+
+- 使用 **st.dataframe** 或 **st.data_editor**，并添加 `on_select` 回调（Streamlit 1.27+）
+- 或使用 **st.table** + 每行末尾的按钮（兼容性更好）：
+  ```python
+  for idx, row in result_df.iterrows():
+      cols = st.columns([3,2,2,2,2,2,1])
+      # ... 显示各列数据
+      if cols[-1].button("📊", key=row['code']):
+          st.session_state['selected_code'] = row['code']
+          st.session_state['show_kline'] = True
+  
+  if st.session_state.get('show_kline'):
+      plot_kline_with_emas(...)
+### 十一、验收测试用例
+1. 找一支历史上明显“突破三线”的股票（如2024年9月的中信证券），确认工具能识别到那个日期
+2. 找一支均线粘合后向上发散的股票（如2023年12月的中际旭创），确认粘合条件被正确标记
+3. 请在你的代码中加入这两个测试用例的注释说明，并验证通过
+### 十二、K线图自测要求
+请在你的代码中包含以下验证逻辑：
+1. 选取一支已知股票（如000001.SZ，平安银行），生成最近60日K线图
+2. 在图上检查：
+   - 蜡烛图是否正确显示红涨绿跌
+   - 三条EMA线是否平滑且顺序正确（EMA21 < EMA55 < EMA120 在空头排列时）
+   - 成交量柱状图是否与日期对齐
+3. 若上述任一点不满足，请自行修正后再提交
+
+### 十三、交付物
+1. 完整的项目代码（一个app.py文件 + requirements.txt）
+2. 启动方式：`streamlit run app.py`
+3. README.md：包含依赖安装、首次启动说明、两个验收测试用例的操作步骤
