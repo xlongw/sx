@@ -1,251 +1,494 @@
-2026-05-29 13:30:33,688 - WARNING - baostock stock list failed: query_all_stock returned empty result, using built-in list
-2026-05-29 16:06:03,007 - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
-handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
-Traceback (most recent call last):
-  File "C:\Users\14132\AppData\Local\Programs\Python\Python314\Lib\asyncio\events.py", line 94, in _run
-    self._context.run(self._callback, *self._args)
-    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\14132\AppData\Local\Programs\Python\Python314\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
-    self._sock.shutdown(socket.SHUT_RDWR)
-    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
-ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
-2026-05-29 17:04:41,275 - WARNING - 数据不足 (仅28天): 301666 大普微
-2026-05-29 17:04:41.276841 - 数据不足 (仅28天): 301666 大普微
-2026-05-29 17:04:42,144 - WARNING - 数据不足 (仅43天): 301682 宏明电子
-2026-05-29 17:04:42.144847 - 数据不足 (仅43天): 301682 宏明电子
-2026-05-29 17:04:43,087 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:04:43.088615 - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:04:43,869 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:04:43.869915 - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:15:18,228 - WARNING - baostock query failed for 000001: 网络接收错误。
-2026-05-29 17:15:18,230 - WARNING - baostock query failed for 600000: 网络接收错误。
-2026-05-29 17:15:18,232 - WARNING - baostock query failed for 600015: 网络接收错误。
-2026-05-29 17:15:18,233 - WARNING - baostock query failed for 600016: 网络接收错误。
-2026-05-29 17:15:18,233 - WARNING - baostock query failed for 600036: 网络接收错误。
-2026-05-29 17:15:18,234 - WARNING - baostock query failed for 601009: 网络接收错误。
-2026-05-29 17:15:18,235 - WARNING - baostock query failed for 601166: 网络接收错误。
-2026-05-29 17:15:18,236 - WARNING - baostock query failed for 601288: 网络接收错误。
-2026-05-29 17:15:18,236 - WARNING - baostock query failed for 601328: 网络接收错误。
-2026-05-29 17:15:18,237 - WARNING - baostock query failed for 601398: 网络接收错误。
-2026-05-29 17:15:18,238 - WARNING - baostock query failed for 601818: 网络接收错误。
-2026-05-29 17:15:18,239 - WARNING - baostock query failed for 601939: 网络接收错误。
-2026-05-29 17:15:18,240 - WARNING - baostock query failed for 601988: 网络接收错误。
-2026-05-29 17:15:18,240 - WARNING - baostock query failed for 002142: 网络接收错误。
-2026-05-29 17:15:18,241 - WARNING - baostock query failed for 601658: 网络接收错误。
-2026-05-29 17:15:18,242 - WARNING - baostock query failed for 600919: 网络接收错误。
-2026-05-29 17:15:18,243 - WARNING - baostock query failed for 601998: 网络接收错误。
-2026-05-29 17:15:18,243 - WARNING - baostock query failed for 601825: 网络接收错误。
-2026-05-29 17:15:18,244 - WARNING - baostock query failed for 601838: 网络接收错误。
-2026-05-29 17:15:18,245 - WARNING - baostock query failed for 601916: 网络接收错误。
-2026-05-29 17:15:18,245 - WARNING - baostock query failed for 601077: 网络接收错误。
-2026-05-29 17:15:18,246 - WARNING - baostock query failed for 601577: 网络接收错误。
-2026-05-29 17:15:18,247 - WARNING - baostock query failed for 601665: 网络接收错误。
-2026-05-29 17:15:18,247 - WARNING - baostock query failed for 601997: 网络接收错误。
-2026-05-29 17:15:18,248 - WARNING - baostock query failed for 601963: 网络接收错误。
-2026-05-29 17:15:18,249 - WARNING - baostock query failed for 601128: 网络接收错误。
-2026-05-29 17:15:18,249 - WARNING - baostock query failed for 601187: 网络接收错误。
-2026-05-29 17:15:18,250 - WARNING - baostock query failed for 600908: 网络接收错误。
-2026-05-29 17:15:18,251 - WARNING - baostock query failed for 002966: 网络接收错误。
-2026-05-29 17:15:18,252 - WARNING - baostock query failed for 002958: 网络接收错误。
-2026-05-29 17:15:18,253 - WARNING - baostock query failed for 001227: 网络接收错误。
-2026-05-29 17:15:18,253 - WARNING - baostock query failed for 002936: 网络接收错误。
-2026-05-29 17:15:18,254 - WARNING - baostock query failed for 002948: 网络接收错误。
-2026-05-29 17:15:18,255 - WARNING - baostock query failed for 002807: 网络接收错误。
-2026-05-29 17:15:18,256 - WARNING - baostock query failed for 002839: 网络接收错误。
-2026-05-29 17:15:18,256 - WARNING - baostock query failed for 600928: 网络接收错误。
-2026-05-29 17:15:18,256 - WARNING - baostock query failed for 601860: 网络接收错误。
-2026-05-29 17:15:18,257 - WARNING - baostock query failed for 601528: 网络接收错误。
-2026-05-29 17:15:18,257 - WARNING - baostock query failed for 603323: 网络接收错误。
-2026-05-29 17:15:18,258 - WARNING - baostock query failed for 601229: 网络接收错误。
-2026-05-29 17:15:18,258 - WARNING - baostock query failed for 601169: 网络接收错误。
-2026-05-29 17:15:18,259 - WARNING - baostock query failed for 601318: 网络接收错误。
-2026-05-29 17:15:18,260 - WARNING - baostock query failed for 601601: 网络接收错误。
-2026-05-29 17:15:18,261 - WARNING - baostock query failed for 601628: 网络接收错误。
-2026-05-29 17:15:18,261 - WARNING - baostock query failed for 601336: 网络接收错误。
-2026-05-29 17:15:18,262 - WARNING - baostock query failed for 601319: 网络接收错误。
-2026-05-29 17:15:18,263 - WARNING - baostock query failed for 600030: 网络接收错误。
-2026-05-29 17:15:18,264 - WARNING - baostock query failed for 600837: 网络接收错误。
-2026-05-29 17:15:18,265 - WARNING - baostock query failed for 600958: 网络接收错误。
-2026-05-29 17:15:18,266 - WARNING - baostock query failed for 600999: 网络接收错误。
-2026-05-29 17:15:18,266 - WARNING - baostock query failed for 601066: 网络接收错误。
-2026-05-29 17:15:18,267 - WARNING - baostock query failed for 601211: 网络接收错误。
-2026-05-29 17:15:18,267 - WARNING - baostock query failed for 601375: 网络接收错误。
-2026-05-29 17:15:18,268 - WARNING - baostock query failed for 601688: 网络接收错误。
-2026-05-29 17:15:18,269 - WARNING - baostock query failed for 601881: 网络接收错误。
-2026-05-29 17:15:18,270 - WARNING - baostock query failed for 601788: 网络接收错误。
-2026-05-29 17:15:18,270 - WARNING - baostock query failed for 601059: 网络接收错误。
-2026-05-29 17:15:18,271 - WARNING - baostock query failed for 601901: 网络接收错误。
-2026-05-29 17:15:18,272 - WARNING - baostock query failed for 601377: 网络接收错误。
-2026-05-29 17:15:18,272 - WARNING - baostock query failed for 601198: 网络接收错误。
-2026-05-29 17:15:18,273 - WARNING - baostock query failed for 601878: 网络接收错误。
-2026-05-29 17:15:18,274 - WARNING - baostock query failed for 601136: 网络接收错误。
-2026-05-29 17:15:18,274 - WARNING - baostock query failed for 002945: 网络接收错误。
-2026-05-29 17:15:18,275 - WARNING - baostock query failed for 601555: 网络接收错误。
-2026-05-29 17:15:18,276 - WARNING - baostock query failed for 601456: 网络接收错误。
-2026-05-29 17:15:18,277 - WARNING - baostock query failed for 601108: 网络接收错误。
-2026-05-29 17:15:18,278 - WARNING - baostock query failed for 600909: 网络接收错误。
-2026-05-29 17:15:18,278 - WARNING - baostock query failed for 601236: 网络接收错误。
-2026-05-29 17:15:18,279 - WARNING - baostock query failed for 600109: 网络接收错误。
-2026-05-29 17:15:18,280 - WARNING - baostock query failed for 601696: 网络接收错误。
-2026-05-29 17:15:18,281 - WARNING - baostock query failed for 000728: 网络接收错误。
-2026-05-29 17:15:18,282 - WARNING - baostock query failed for 002939: 网络接收错误。
-2026-05-29 17:15:18,283 - WARNING - baostock query failed for 002673: 网络接收错误。
-2026-05-29 17:15:18,283 - WARNING - baostock query failed for 002797: 网络接收错误。
-2026-05-29 17:15:18,284 - WARNING - baostock query failed for 601162: 网络接收错误。
-2026-05-29 17:15:18,285 - WARNING - baostock query failed for 600369: 网络接收错误。
-2026-05-29 17:15:18,286 - WARNING - baostock query failed for 601990: 网络接收错误。
-2026-05-29 17:15:18,287 - WARNING - baostock query failed for 600918: 网络接收错误。
-2026-05-29 17:15:18,288 - WARNING - baostock query failed for 000166: 网络接收错误。
-2026-05-29 17:15:18,289 - WARNING - baostock query failed for 000776: 网络接收错误。
-2026-05-29 17:15:18,289 - WARNING - baostock query failed for 002736: 网络接收错误。
-2026-05-29 17:15:18,290 - WARNING - baostock query failed for 601995: 网络接收错误。
-2026-05-29 17:15:18,291 - WARNING - baostock query failed for 600906: 网络接收错误。
-2026-05-29 17:15:18,292 - WARNING - baostock query failed for 000750: 网络接收错误。
-2026-05-29 17:15:18,293 - WARNING - baostock query failed for 002926: 网络接收错误。
-2026-05-29 17:15:18,293 - WARNING - baostock query failed for 002500: 网络接收错误。
-2026-05-29 17:15:18,294 - WARNING - baostock query failed for 000686: 网络接收错误。
-2026-05-29 17:15:18,294 - WARNING - baostock query failed for 600621: 网络接收错误。
-2026-05-29 17:15:18,295 - WARNING - baostock query failed for 000783: 网络接收错误。
-2026-05-29 17:15:18,296 - WARNING - baostock query failed for 600061: 网络接收错误。
-2026-05-29 17:15:18,297 - WARNING - baostock query failed for 601099: 网络接收错误。
-2026-05-29 17:15:18,298 - WARNING - baostock query failed for 601456: 网络接收错误。
-2026-05-29 17:15:18,298 - WARNING - baostock query failed for 600909: 网络接收错误。
-2026-05-29 17:15:18,299 - WARNING - baostock query failed for 002670: 网络接收错误。
-2026-05-29 17:15:18,300 - WARNING - baostock query failed for 000987: 网络接收错误。
-2026-05-29 17:15:18,300 - WARNING - baostock query failed for 002797: 网络接收错误。
-2026-05-29 17:15:18,301 - WARNING - baostock query failed for 601375: 网络接收错误。
-2026-05-29 17:15:18,302 - WARNING - baostock query failed for 601878: 网络接收错误。
-2026-05-29 17:15:18,303 - WARNING - baostock query failed for 601990: 网络接收错误。
-2026-05-29 17:15:18,304 - WARNING - baostock query failed for 600918: 网络接收错误。
-2026-05-29 17:15:18,305 - WARNING - baostock query failed for 600095: 网络接收错误。
-2026-05-29 17:15:18,306 - WARNING - baostock query failed for 601456: 网络接收错误。
-2026-05-29 17:15:18,307 - WARNING - baostock query failed for 002939: 网络接收错误。
-2026-05-29 17:15:18,308 - WARNING - baostock query failed for 601236: 网络接收错误。
-2026-05-29 17:15:18,309 - WARNING - baostock query failed for 601059: 网络接收错误。
-2026-05-29 17:15:18,310 - WARNING - baostock query failed for 601136: 网络接收错误。
-2026-05-29 17:15:18,311 - WARNING - baostock query failed for 601881: 网络接收错误。
-2026-05-29 17:15:18,311 - WARNING - baostock query failed for 601066: 网络接收错误。
-2026-05-29 17:15:18,312 - WARNING - baostock query failed for 601211: 网络接收错误。
-2026-05-29 17:15:18,314 - WARNING - baostock query failed for 000568: 网络接收错误。
-2026-05-29 17:15:18,315 - WARNING - baostock query failed for 000858: 网络接收错误。
-2026-05-29 17:15:18,317 - WARNING - baostock query failed for 600519: 网络接收错误。
-2026-05-29 17:15:18,318 - WARNING - baostock query failed for 600809: 网络接收错误。
-2026-05-29 17:15:18,320 - WARNING - baostock query failed for 002304: 网络接收错误。
-2026-05-29 17:15:18,324 - WARNING - baostock query failed for 000596: 网络接收错误。
-2026-05-29 17:15:18,326 - WARNING - baostock query failed for 603369: 网络接收错误。
-2026-05-29 17:15:18,328 - WARNING - baostock query failed for 603198: 网络接收错误。
-2026-05-29 17:15:18,330 - WARNING - baostock query failed for 600779: 网络接收错误。
-2026-05-29 17:15:18,332 - WARNING - baostock query failed for 603919: 网络接收错误。
-2026-05-29 17:15:18,333 - WARNING - baostock query failed for 600559: 网络接收错误。
-2026-05-29 17:15:18,334 - WARNING - baostock query failed for 000799: 网络接收错误。
-2026-05-29 17:15:18,335 - WARNING - baostock query failed for 600702: 网络接收错误。
-2026-05-29 17:15:18,336 - WARNING - baostock query failed for 603198: 网络接收错误。
-2026-05-29 17:15:18,337 - WARNING - baostock query failed for 603589: 网络接收错误。
-2026-05-29 17:15:18,338 - WARNING - baostock query failed for 600199: 网络接收错误。
-2026-05-29 17:15:18,339 - WARNING - baostock query failed for 600197: 网络接收错误。
-2026-05-29 17:15:18,340 - WARNING - baostock query failed for 600059: 网络接收错误。
-2026-05-29 17:15:18,341 - WARNING - baostock query failed for 600600: 网络接收错误。
-2026-05-29 17:15:18,342 - WARNING - baostock query failed for 000729: 网络接收错误。
-2026-05-29 17:15:18,343 - WARNING - baostock query failed for 000752: 网络接收错误。
-2026-05-29 17:15:18,344 - WARNING - baostock query failed for 002461: 网络接收错误。
-2026-05-29 17:15:18,345 - WARNING - baostock query failed for 000929: 网络接收错误。
-2026-05-29 17:15:18,346 - WARNING - baostock query failed for 600132: 网络接收错误。
-2026-05-29 17:15:18,347 - WARNING - baostock query failed for 000333: 网络接收错误。
-2026-05-29 17:15:18,348 - WARNING - baostock query failed for 000651: 网络接收错误。
-2026-05-29 17:15:18,349 - WARNING - baostock query failed for 600690: 网络接收错误。
-2026-05-29 17:15:18,349 - WARNING - baostock query failed for 002668: 网络接收错误。
-2026-05-29 17:15:18,350 - WARNING - baostock query failed for 000921: 网络接收错误。
-2026-05-29 17:15:18,351 - WARNING - baostock query failed for 600060: 网络接收错误。
-2026-05-29 17:15:18,352 - WARNING - baostock query failed for 002959: 网络接收错误。
-2026-05-29 17:15:18,353 - WARNING - baostock query failed for 002508: 网络接收错误。
-2026-05-29 17:15:18,355 - WARNING - baostock query failed for 603868: 网络接收错误。
-2026-05-29 17:15:18,356 - WARNING - baostock query failed for 603355: 网络接收错误。
-2026-05-29 17:15:18,357 - WARNING - baostock query failed for 002032: 网络接收错误。
-2026-05-29 17:15:18,358 - WARNING - baostock query failed for 002242: 网络接收错误。
-2026-05-29 17:15:18,359 - WARNING - baostock query failed for 603515: 网络接收错误。
-2026-05-29 17:15:18,360 - WARNING - baostock query failed for 002705: 网络接收错误。
-2026-05-29 17:15:18,361 - WARNING - baostock query failed for 000810: 网络接收错误。
-2026-05-29 17:15:18,362 - WARNING - baostock query failed for 603551: 网络接收错误。
-2026-05-29 17:15:18,363 - WARNING - baostock query failed for 603657: 网络接收错误。
-2026-05-29 17:15:18,363 - WARNING - baostock query failed for 002543: 网络接收错误。
-2026-05-29 17:15:18,364 - WARNING - baostock query failed for 002429: 网络接收错误。
-2026-05-29 17:15:18,365 - WARNING - baostock query failed for 000521: 网络接收错误。
-2026-05-29 17:15:18,366 - WARNING - baostock query failed for 600336: 网络接收错误。
-2026-05-29 17:15:18,367 - WARNING - baostock query failed for 603579: 网络接收错误。
-2026-05-29 17:15:18,368 - WARNING - baostock query failed for 603868: 网络接收错误。
-2026-05-29 17:15:18,369 - WARNING - baostock query failed for 603515: 网络接收错误。
-2026-05-29 17:15:18,371 - WARNING - baostock query failed for 002614: 网络接收错误。
-2026-05-29 17:15:18,372 - WARNING - baostock query failed for 002242: 网络接收错误。
-2026-05-29 17:15:18,373 - WARNING - baostock query failed for 002508: 网络接收错误。
-2026-05-29 17:15:18,374 - WARNING - baostock query failed for 000538: 网络接收错误。
-2026-05-29 17:15:18,375 - WARNING - baostock query failed for 000963: 网络接收错误。
-2026-05-29 17:15:18,376 - WARNING - baostock query failed for 600085: 网络接收错误。
-2026-05-29 17:15:18,377 - WARNING - baostock query failed for 600196: 网络接收错误。
-2026-05-29 17:15:18,378 - WARNING - baostock query failed for 600276: 网络接收错误。
-2026-05-29 17:15:18,379 - WARNING - baostock query failed for 600332: 网络接收错误。
-2026-05-29 17:15:18,380 - WARNING - baostock query failed for 600436: 网络接收错误。
-2026-05-29 17:15:18,381 - WARNING - baostock query failed for 002001: 网络接收错误。
-2026-05-29 17:15:18,382 - WARNING - baostock query failed for 002007: 网络接收错误。
-2026-05-29 17:15:18,383 - WARNING - baostock query failed for 300760: 网络接收错误。
-2026-05-29 17:15:18,384 - WARNING - baostock query failed for 300122: 网络接收错误。
-2026-05-29 17:15:18,385 - WARNING - baostock query failed for 000999: 网络接收错误。
-2026-05-29 17:15:18,387 - WARNING - baostock query failed for 002422: 网络接收错误。
-2026-05-29 17:15:18,388 - WARNING - baostock query failed for 300015: 网络接收错误。
-2026-05-29 17:15:18,390 - WARNING - baostock query failed for 600521: 网络接收错误。
-2026-05-29 17:15:18,391 - WARNING - baostock query failed for 300759: 网络接收错误。
-2026-05-29 17:15:18,392 - WARNING - baostock query failed for 002821: 网络接收错误。
-2026-05-29 17:15:18,393 - WARNING - baostock query failed for 300347: 网络接收错误。
-2026-05-29 17:15:18,394 - WARNING - baostock query failed for 600161: 网络接收错误。
-2026-05-29 17:15:18,395 - WARNING - baostock query failed for 002252: 网络接收错误。
-2026-05-29 17:15:18,396 - WARNING - baostock query failed for 000513: 网络接收错误。
-2026-05-29 17:15:18,397 - WARNING - baostock query failed for 600062: 网络接收错误。
-2026-05-29 17:15:18,398 - WARNING - baostock query failed for 002603: 网络接收错误。
-2026-05-29 17:15:18,399 - WARNING - baostock query failed for 000423: 网络接收错误。
-2026-05-29 17:15:18,400 - WARNING - baostock query failed for 300896: 网络接收错误。
-2026-05-29 17:15:18,401 - WARNING - baostock query failed for 300601: 网络接收错误。
-2026-05-29 17:15:18,402 - WARNING - baostock query failed for 300558: 网络接收错误。
-2026-05-29 17:15:18,403 - WARNING - baostock query failed for 002262: 网络接收错误。
-2026-05-29 17:15:18,404 - WARNING - baostock query failed for 000739: 网络接收错误。
-2026-05-29 17:15:18,405 - WARNING - baostock query failed for 002020: 网络接收错误。
-2026-05-29 17:15:18,406 - WARNING - baostock query failed for 600535: 网络接收错误。
-2026-05-29 17:15:18,407 - WARNING - baostock query failed for 600867: 网络接收错误。
-2026-05-29 17:15:18,408 - WARNING - baostock query failed for 600566: 网络接收错误。
-2026-05-29 17:15:18,408 - WARNING - baostock query failed for 002038: 网络接收错误。
-2026-05-29 17:15:18,409 - WARNING - baostock query failed for 000661: 网络接收错误。
-2026-05-29 17:15:18,410 - WARNING - baostock query failed for 002773: 网络接收错误。
-2026-05-29 17:15:18,411 - WARNING - baostock query failed for 300142: 网络接收错误。
-2026-05-29 17:15:18,412 - WARNING - baostock query failed for 300122: 网络接收错误。
-2026-05-29 17:15:18,414 - WARNING - baostock query failed for 300601: 网络接收错误。
-2026-05-29 17:15:18,415 - WARNING - baostock query failed for 002007: 网络接收错误。
-2026-05-29 17:32:45,633 - WARNING - 数据不足 (仅28天): 301666 大普微
-2026-05-29 17:32:45.634052 - 数据不足 (仅28天): 301666 大普微
-2026-05-29 17:32:45,754 - WARNING - 数据不足 (仅43天): 301682 宏明电子
-2026-05-29 17:32:45.755319 - 数据不足 (仅43天): 301682 宏明电子
-2026-05-29 17:32:45,889 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:32:45.890586 - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:32:46,040 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:32:46.041192 - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:37:58,495 - WARNING - 数据不足 (仅28天): 301666 大普微
-2026-05-29 17:37:58.495689 - 数据不足 (仅28天): 301666 大普微
-2026-05-29 17:37:59,618 - WARNING - 数据不足 (仅43天): 301682 宏明电子
-2026-05-29 17:37:59.618864 - 数据不足 (仅43天): 301682 宏明电子
-2026-05-29 17:38:00,030 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:38:00.031327 - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:38:00,287 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:38:00.287923 - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:39:48,205 - WARNING - 数据不足 (仅28天): 301666 大普微
-2026-05-29 17:39:48.206112 - 数据不足 (仅28天): 301666 大普微
-2026-05-29 17:39:48,683 - WARNING - 数据不足 (仅43天): 301682 宏明电子
-2026-05-29 17:39:48.684205 - 数据不足 (仅43天): 301682 宏明电子
-2026-05-29 17:39:49,684 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:39:49.685153 - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:39:49,830 - WARNING - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 17:39:49.830915 - 数据不足 (仅32天): 301696 三瑞智能
-2026-05-29 18:54:56,440 - WARNING - 数据不足 (仅29天): 301666 大普微
-2026-05-29 18:54:56.440514 - 数据不足 (仅29天): 301666 大普微
-2026-05-29 18:54:56,576 - WARNING - 数据不足 (仅44天): 301682 宏明电子
-2026-05-29 18:54:56.577330 - 数据不足 (仅44天): 301682 宏明电子
-2026-05-29 18:54:56,730 - WARNING - 数据不足 (仅33天): 301696 三瑞智能
-2026-05-29 18:54:56.731144 - 数据不足 (仅33天): 301696 三瑞智能
-2026-05-29 18:54:56,870 - WARNING - 数据不足 (仅33天): 301696 三瑞智能
-2026-05-29 18:54:56.871047 - 数据不足 (仅33天): 301696 三瑞智能
+2026-05-29 22:17:07,638 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:17:07,952 - INFO - Baostock 登录成功
+2026-05-29 22:18:12,526 - INFO - Baostock 登录成功
+2026-05-29 22:18:12,930 - INFO - Baostock 登录成功
+2026-05-29 22:18:14,023 - WARNING - Baostock 网络错误 600016 (第1次): 网络接收错误。
+2026-05-29 22:18:14,023 - INFO - 等待 1s 后重试 600016...
+2026-05-29 22:18:15,889 - WARNING - Baostock 网络错误 600036 (第1次): 网络接收错误。
+2026-05-29 22:18:15,890 - INFO - 等待 1s 后重试 600036...
+2026-05-29 22:18:15,973 - INFO - Baostock 登录成功
+2026-05-29 22:18:17,026 - INFO - Baostock 登录成功
+2026-05-29 22:18:20,155 - WARNING - Baostock 网络错误 601398 (第1次): 网络接收错误。
+2026-05-29 22:18:20,155 - INFO - 等待 1s 后重试 601398...
+2026-05-29 22:18:23,130 - WARNING - Baostock 网络错误 601939 (第1次): 网络接收错误。
+2026-05-29 22:18:23,130 - INFO - 等待 1s 后重试 601939...
+2026-05-29 22:18:23,200 - INFO - Baostock 登录成功
+2026-05-29 22:18:24,204 - WARNING - Baostock 网络错误 601988 (第1次): 网络接收错误。
+2026-05-29 22:18:24,205 - INFO - 等待 1s 后重试 601988...
+2026-05-29 22:18:24,332 - INFO - Baostock 登录成功
+2026-05-29 22:18:25,357 - INFO - Baostock 登录成功
+2026-05-29 22:18:27,541 - WARNING - Baostock 网络错误 600919 (第1次): 网络接收错误。
+2026-05-29 22:18:27,541 - INFO - 等待 1s 后重试 600919...
+2026-05-29 22:18:27,613 - WARNING - Baostock 网络错误 601658 (第1次): 网络接收错误。
+2026-05-29 22:18:27,613 - INFO - 等待 1s 后重试 601658...
+2026-05-29 22:18:28,970 - INFO - Baostock 登录成功
+2026-05-29 22:18:29,313 - ERROR - Baostock 登录失败: 网络接收错误。
+2026-05-29 22:18:36,494 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:18:40,116 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:18:40,484 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:18:59,022 - WARNING - Baostock 网络错误 002807 (第1次): 网络接收错误。
+2026-05-29 22:18:59,022 - INFO - 等待 1s 后重试 002807...
+2026-05-29 22:19:00,092 - WARNING - Baostock 网络错误 002948 (第1次): 网络接收错误。
+2026-05-29 22:19:00,092 - INFO - 等待 1s 后重试 002948...
+2026-05-29 22:19:01,220 - INFO - Baostock 登录成功
+2026-05-29 22:19:01,267 - INFO - Baostock 登录成功
+2026-05-29 22:22:41,553 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:24:55,821 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:24:59,251 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:25:03,043 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:25:05,216 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:30:15,123 - INFO - Baostock 登录成功
+2026-05-29 22:31:38,587 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:31:41,498 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:31:44,327 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:31:46,636 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:31:50,909 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:31:54,854 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:34:44,161 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:34:46,801 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:34:52,962 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:35:35,914 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:35:39,075 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:35:42,403 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:35:46,355 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:36:06,617 - WARNING - Baostock 网络错误 600000 (第1次): 网络接收错误。
+2026-05-29 22:36:06,617 - WARNING - Baostock 网络错误 000001 (第1次): 网络接收错误。
+2026-05-29 22:36:06,617 - INFO - 等待 1s 后重试 600000...
+2026-05-29 22:36:06,617 - INFO - 等待 1s 后重试 000001...
+2026-05-29 22:36:08,338 - INFO - Baostock 登录成功
+2026-05-29 22:36:08,884 - INFO - Baostock 登录成功
+2026-05-29 22:36:19,116 - WARNING - Baostock 网络错误 601998 (第1次): 网络接收错误。
+2026-05-29 22:36:19,117 - INFO - 等待 1s 后重试 601998...
+2026-05-29 22:36:20,843 - WARNING - Baostock 网络错误 601838 (第1次): 网络接收错误。
+2026-05-29 22:36:20,843 - INFO - 等待 1s 后重试 601838...
+2026-05-29 22:36:20,915 - INFO - Baostock 登录成功
+2026-05-29 22:36:22,024 - INFO - Baostock 登录成功
+2026-05-29 22:36:24,417 - WARNING - Baostock 网络错误 601577 (第1次): 网络接收错误。
+2026-05-29 22:36:24,417 - INFO - 等待 1s 后重试 601577...
+2026-05-29 22:36:24,852 - WARNING - Baostock 网络错误 601077 (第1次): 网络接收错误。
+2026-05-29 22:36:24,853 - INFO - 等待 1s 后重试 601077...
+2026-05-29 22:36:25,546 - INFO - Baostock 登录成功
+2026-05-29 22:36:25,988 - INFO - Baostock 登录成功
+2026-05-29 22:36:40,640 - WARNING - Baostock 网络错误 601628 (第1次): 网络接收错误。
+2026-05-29 22:36:40,640 - INFO - 等待 1s 后重试 601628...
+2026-05-29 22:36:41,844 - WARNING - Baostock 网络错误 601601 (第1次): 网络接收错误。
+2026-05-29 22:36:41,845 - INFO - 等待 1s 后重试 601601...
+2026-05-29 22:36:43,327 - INFO - Baostock 登录成功
+2026-05-29 22:36:43,330 - INFO - Baostock 登录成功
+2026-05-29 22:36:43,763 - WARNING - Baostock 网络错误 601628 (第2次): 网络接收错误。
+2026-05-29 22:36:43,763 - INFO - 等待 2s 后重试 601628...
+2026-05-29 22:36:47,399 - WARNING - Baostock 网络错误 601336 (第1次): 网络接收错误。
+2026-05-29 22:36:47,400 - INFO - 等待 1s 后重试 601336...
+2026-05-29 22:36:47,479 - INFO - Baostock 登录成功
+2026-05-29 22:36:48,526 - WARNING - Baostock 网络错误 601319 (第1次): 网络接收错误。
+2026-05-29 22:36:48,526 - INFO - 等待 1s 后重试 601319...
+2026-05-29 22:36:48,597 - INFO - Baostock 登录成功
+2026-05-29 22:36:49,641 - INFO - Baostock 登录成功
+2026-05-29 22:36:51,300 - WARNING - Baostock 网络错误 600958 (第1次): 网络接收错误。
+2026-05-29 22:36:51,300 - INFO - 等待 1s 后重试 600958...
+
+
+
+2026-05-29 22:39:20,684 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:39:28,164 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:39:30,618 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:39:32,557 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:39:42,313 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:39:42,657 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:39:53,614 - WARNING - Baostock 网络错误 000918 (第1次): 网络接收错误。
+2026-05-29 22:39:53,617 - INFO - 等待 1s 后重试 000918...
+2026-05-29 22:39:53,731 - INFO - Baostock 登录成功
+2026-05-29 22:39:54,729 - INFO - Baostock 登录成功
+2026-05-29 22:40:01,657 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:40:07,951 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:40:12,374 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:40:16,837 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:40:18,923 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:40:19,237 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:40:24,120 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:40:25,624 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:40:27,584 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:40:29,099 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:40:31,075 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:40:32,087 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:40:36,364 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:41:15,781 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:41:52,298 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:41:55,464 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:42:59,381 - INFO - Baostock 登录成功
+2026-05-29 22:43:35,664 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:43:37,889 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:43:40,471 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:43:41,937 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:43:42,754 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:43:45,339 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:46:27,741 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:46:32,374 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:46:37,608 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:46:38,496 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:46:45,957 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:46:46,629 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:46:57,178 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:46:57,727 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:47:54,888 - INFO - Baostock 登录成功
+2026-05-29 22:49:19,843 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:49:47,552 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:49:47,683 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:49:50,341 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:51:51,442 - INFO - Baostock 登录成功
+2026-05-29 22:52:03,168 - WARNING - AkShare 获取异常 000001 (第1次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 22:52:03,169 - INFO - 等待 1s 后重试 000001...
+2026-05-29 22:52:04,486 - WARNING - AkShare 获取异常 000001 (第2次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 22:52:04,486 - INFO - 等待 2s 后重试 000001...
+2026-05-29 22:52:06,795 - WARNING - AkShare 获取异常 000001 (第3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 22:52:06,795 - ERROR - AkShare 获取失败 000001 (已重试3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 22:52:46,428 - INFO - Baostock 登录成功
+2026-05-29 22:53:21,387 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:53:21,552 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:53:22,888 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 22:55:27,237 - WARNING - Baostock 查询失败 000672: 用户未登录
+2026-05-29 22:55:28,187 - WARNING - Baostock 查询失败 002233: 用户未登录
+2026-05-29 22:55:28,909 - WARNING - Baostock 查询失败 600425: 用户未登录
+2026-05-29 22:55:29,660 - WARNING - Baostock 查询失败 600802: 用户未登录
+2026-05-29 22:55:30,759 - WARNING - Baostock 查询失败 600883: 用户未登录
+2026-05-29 22:55:32,726 - WARNING - Baostock 查询失败 000012: 用户未登录
+2026-05-29 22:55:33,373 - WARNING - Baostock 查询失败 000055: 用户未登录
+2026-05-29 22:55:34,569 - WARNING - Baostock 查询失败 000619: 用户未登录
+2026-05-29 22:55:35,373 - WARNING - Baostock 查询失败 002043: 用户未登录
+2026-05-29 22:55:36,901 - WARNING - Baostock 查询失败 002082: 用户未登录
+2026-05-29 22:55:37,742 - WARNING - Baostock 查询失败 002163: 用户未登录
+2026-05-29 22:55:38,769 - WARNING - Baostock 查询失败 002201: 用户未登录
+2026-05-29 22:55:39,703 - WARNING - Baostock 查询失败 002247: 用户未登录
+2026-05-29 22:55:40,489 - WARNING - Baostock 查询失败 002323: 用户未登录
+2026-05-29 22:55:41,963 - WARNING - Baostock 查询失败 002333: 用户未登录
+2026-05-29 22:55:44,110 - WARNING - Baostock 查询失败 002392: 用户未登录
+2026-05-29 22:55:45,161 - WARNING - Baostock 查询失败 002398: 用户未登录
+2026-05-29 22:55:46,352 - WARNING - Baostock 查询失败 002457: 用户未登录
+2026-05-29 22:55:47,855 - WARNING - Baostock 查询失败 002545: 用户未登录
+2026-05-29 22:55:48,876 - WARNING - Baostock 查询失败 002571: 用户未登录
+2026-05-29 22:55:50,076 - WARNING - Baostock 查询失败 002613: 用户未登录
+2026-05-29 22:55:50,755 - WARNING - Baostock 查询失败 002623: 用户未登录
+2026-05-29 22:55:51,976 - WARNING - Baostock 查询失败 002652: 用户未登录
+2026-05-29 22:55:53,135 - WARNING - Baostock 查询失败 002671: 用户未登录
+2026-05-29 22:55:54,666 - WARNING - Baostock 查询失败 002694: 用户未登录
+2026-05-29 22:55:55,247 - WARNING - Baostock 查询失败 002718: 用户未登录
+2026-05-29 22:55:56,354 - WARNING - Baostock 查询失败 002742: 用户未登录
+2026-05-29 22:55:57,871 - WARNING - Baostock 查询失败 002791: 用户未登录
+2026-05-29 22:55:58,933 - WARNING - Baostock 查询失败 002798: 用户未登录
+2026-05-29 22:55:59,530 - WARNING - Baostock 查询失败 002809: 用户未登录
+2026-05-29 22:56:00,170 - WARNING - Baostock 查询失败 002918: 用户未登录
+2026-05-29 22:56:03,053 - WARNING - Baostock 查询失败 002988: 用户未登录
+2026-05-29 22:56:04,258 - WARNING - Baostock 查询失败 003012: 用户未登录
+2026-05-29 22:56:04,993 - WARNING - Baostock 查询失败 300093: 用户未登录
+2026-05-29 22:56:06,280 - WARNING - Baostock 查询失败 300117: 用户未登录
+2026-05-29 22:56:07,458 - WARNING - Baostock 查询失败 300135: 用户未登录
+2026-05-29 22:56:08,597 - WARNING - Baostock 查询失败 300163: 用户未登录
+2026-05-29 22:56:09,767 - WARNING - Baostock 查询失败 300196: 用户未登录
+2026-05-29 22:56:10,565 - WARNING - Baostock 查询失败 300198: 用户未登录
+2026-05-29 22:56:11,495 - WARNING - Baostock 查询失败 300234: 用户未登录
+2026-05-29 22:56:12,976 - WARNING - Baostock 查询失败 300374: 用户未登录
+2026-05-29 22:56:14,009 - WARNING - Baostock 查询失败 300599: 用户未登录
+2026-05-29 22:56:15,300 - WARNING - Baostock 查询失败 300715: 用户未登录
+2026-05-29 22:56:16,627 - WARNING - Baostock 查询失败 300737: 用户未登录
+2026-05-29 22:56:17,991 - WARNING - Baostock 查询失败 300767: 用户未登录
+2026-05-29 22:56:18,534 - WARNING - Baostock 查询失败 600321: 用户未登录
+2026-05-29 22:56:19,445 - WARNING - Baostock 查询失败 600326: 用户未登录
+2026-05-29 22:56:20,634 - WARNING - Baostock 查询失败 600477: 用户未登录
+2026-05-29 22:56:22,029 - WARNING - Baostock 查询失败 600496: 用户未登录
+2026-05-29 22:56:22,973 - WARNING - Baostock 查询失败 600539: 用户未登录
+2026-05-29 22:56:24,366 - WARNING - Baostock 查询失败 600586: 用户未登录
+2026-05-29 22:56:25,592 - WARNING - Baostock 查询失败 600629: 用户未登录
+2026-05-29 22:56:26,504 - WARNING - Baostock 查询失败 600678: 用户未登录
+2026-05-29 22:56:27,160 - WARNING - Baostock 查询失败 600819: 用户未登录
+2026-05-29 22:56:28,689 - WARNING - Baostock 查询失败 600876: 用户未登录
+2026-05-29 22:56:29,508 - WARNING - Baostock 查询失败 601636: 用户未登录
+2026-05-29 22:56:30,677 - WARNING - Baostock 查询失败 601992: 用户未登录
+2026-05-29 22:56:31,450 - WARNING - Baostock 查询失败 603378: 用户未登录
+2026-05-29 22:56:32,831 - WARNING - Baostock 查询失败 603616: 用户未登录
+2026-05-29 22:56:33,389 - WARNING - Baostock 查询失败 603856: 用户未登录
+2026-05-29 22:56:34,029 - WARNING - Baostock 查询失败 603937: 用户未登录
+2026-05-29 22:56:35,037 - WARNING - Baostock 查询失败 000625: 用户未登录
+2026-05-29 22:56:36,032 - WARNING - Baostock 查询失败 600104: 用户未登录
+2026-05-29 22:56:37,065 - WARNING - Baostock 查询失败 601238: 用户未登录
+2026-05-29 22:56:38,403 - WARNING - Baostock 查询失败 002594: 用户未登录
+2026-05-29 22:56:39,524 - WARNING - Baostock 查询失败 000338: 用户未登录
+2026-05-29 22:56:41,283 - WARNING - Baostock 查询失败 601127: 用户未登录
+2026-05-29 22:56:42,063 - WARNING - Baostock 查询失败 600066: 用户未登录
+2026-05-29 22:56:43,173 - WARNING - Baostock 查询失败 000951: 用户未登录
+2026-05-29 22:56:44,686 - WARNING - Baostock 查询失败 002920: 用户未登录
+2026-05-29 22:56:45,970 - WARNING - Baostock 查询失败 600741: 用户未登录
+2026-05-29 22:56:46,861 - WARNING - Baostock 查询失败 601633: 用户未登录
+2026-05-29 22:56:47,621 - WARNING - Baostock 查询失败 002050: 用户未登录
+2026-05-29 22:56:49,348 - WARNING - Baostock 查询失败 600418: 用户未登录
+2026-05-29 22:56:50,071 - WARNING - Baostock 查询失败 000550: 用户未登录
+2026-05-29 22:56:50,940 - WARNING - Baostock 查询失败 601689: 用户未登录
+2026-05-29 22:56:51,861 - WARNING - Baostock 查询失败 600660: 用户未登录
+2026-05-29 22:56:53,127 - WARNING - Baostock 查询失败 002085: 用户未登录
+2026-05-29 22:56:54,053 - WARNING - Baostock 查询失败 601799: 用户未登录
+2026-05-29 22:56:54,645 - WARNING - Baostock 查询失败 002126: 用户未登录
+2026-05-29 22:56:56,255 - WARNING - Baostock 查询失败 002984: 用户未登录
+2026-05-29 22:56:57,659 - WARNING - Baostock 查询失败 603179: 用户未登录
+2026-05-29 22:56:59,573 - WARNING - Baostock 查询失败 000581: 用户未登录
+2026-05-29 22:57:00,824 - WARNING - Baostock 查询失败 000887: 用户未登录
+2026-05-29 22:57:02,639 - WARNING - Baostock 查询失败 002472: 用户未登录
+2026-05-29 22:57:03,348 - WARNING - Baostock 查询失败 300432: 用户未登录
+2026-05-29 22:57:04,385 - WARNING - Baostock 查询失败 002048: 用户未登录
+2026-05-29 22:57:05,005 - WARNING - Baostock 查询失败 002101: 用户未登录
+2026-05-29 22:57:05,893 - WARNING - Baostock 查询失败 002190: 用户未登录
+2026-05-29 22:57:06,625 - WARNING - Baostock 查询失败 002284: 用户未登录
+2026-05-29 22:57:07,555 - WARNING - Baostock 查询失败 002328: 用户未登录
+2026-05-29 22:57:08,916 - WARNING - Baostock 查询失败 002355: 用户未登录
+2026-05-29 22:57:10,018 - WARNING - Baostock 查询失败 002363: 用户未登录
+2026-05-29 22:57:10,959 - WARNING - Baostock 查询失败 002406: 用户未登录
+2026-05-29 22:57:12,343 - WARNING - Baostock 查询失败 002434: 用户未登录
+2026-05-29 22:57:13,847 - WARNING - Baostock 查询失败 002448: 用户未登录
+2026-05-29 22:57:14,500 - WARNING - Baostock 查询失败 002454: 用户未登录
+2026-05-29 22:57:15,405 - WARNING - Baostock 查询失败 002488: 用户未登录
+2026-05-29 22:57:17,118 - WARNING - Baostock 查询失败 002510: 用户未登录
+2026-05-29 22:57:18,127 - WARNING - Baostock 查询失败 002536: 用户未登录
+2026-05-29 22:57:18,913 - WARNING - Baostock 查询失败 002590: 用户未登录
+2026-05-29 22:57:19,591 - WARNING - Baostock 查询失败 002592: 用户未登录
+2026-05-29 22:57:20,236 - WARNING - Baostock 查询失败 002593: 用户未登录
+2026-05-29 22:57:20,903 - WARNING - Baostock 查询失败 002625: 用户未登录
+2026-05-29 22:57:21,752 - WARNING - Baostock 查询失败 002662: 用户未登录
+2026-05-29 22:57:23,546 - WARNING - Baostock 查询失败 002664: 用户未登录
+2026-05-29 22:57:24,278 - WARNING - Baostock 查询失败 002703: 用户未登录
+2026-05-29 22:57:25,678 - WARNING - Baostock 查询失败 002708: 用户未登录
+2026-05-29 22:57:26,556 - WARNING - Baostock 查询失败 002715: 用户未登录
+2026-05-29 22:57:27,420 - WARNING - Baostock 查询失败 002725: 用户未登录
+2026-05-29 22:57:28,660 - WARNING - Baostock 查询失败 002765: 用户未登录
+2026-05-29 22:57:29,292 - WARNING - Baostock 查询失败 002786: 用户未登录
+2026-05-29 22:57:30,240 - WARNING - Baostock 查询失败 002813: 用户未登录
+2026-05-29 22:57:31,485 - WARNING - Baostock 查询失败 002863: 用户未登录
+2026-05-29 22:57:32,706 - WARNING - Baostock 查询失败 002865: 用户未登录
+2026-05-29 22:57:34,530 - WARNING - Baostock 查询失败 002870: 用户未登录
+2026-05-29 22:57:36,029 - WARNING - Baostock 查询失败 002921: 用户未登录
+2026-05-29 22:57:36,833 - WARNING - Baostock 查询失败 002931: 用户未登录
+2026-05-29 22:57:38,631 - WARNING - Baostock 查询失败 002976: 用户未登录
+2026-05-29 22:57:40,013 - WARNING - Baostock 查询失败 002997: 用户未登录
+2026-05-29 22:57:41,251 - WARNING - Baostock 查询失败 300100: 用户未登录
+2026-05-29 22:57:41,997 - WARNING - Baostock 查询失败 300176: 用户未登录
+2026-05-29 22:57:43,046 - WARNING - Baostock 查询失败 300258: 用户未登录
+2026-05-29 22:57:44,364 - WARNING - Baostock 查询失败 300304: 用户未登录
+2026-05-29 22:57:45,801 - WARNING - Baostock 查询失败 300375: 用户未登录
+2026-05-29 22:57:46,884 - WARNING - Baostock 查询失败 300473: 用户未登录
+2026-05-29 22:57:48,376 - WARNING - Baostock 查询失败 300507: 用户未登录
+2026-05-29 22:57:49,173 - WARNING - Baostock 查询失败 300547: 用户未登录
+2026-05-29 22:57:50,704 - WARNING - Baostock 查询失败 300580: 用户未登录
+2026-05-29 22:57:51,649 - WARNING - Baostock 查询失败 300611: 用户未登录
+2026-05-29 22:57:52,376 - WARNING - Baostock 查询失败 300643: 用户未登录
+2026-05-29 22:57:53,693 - WARNING - Baostock 查询失败 300652: 用户未登录
+2026-05-29 22:57:54,714 - WARNING - Baostock 查询失败 300680: 用户未登录
+2026-05-29 22:57:55,794 - WARNING - Baostock 查询失败 300681: 用户未登录
+2026-05-29 22:57:56,954 - WARNING - Baostock 查询失败 300695: 用户未登录
+2026-05-29 22:57:57,644 - WARNING - Baostock 查询失败 300707: 用户未登录
+2026-05-29 22:57:58,716 - WARNING - Baostock 查询失败 300733: 用户未登录
+2026-05-29 22:58:00,231 - WARNING - Baostock 查询失败 300745: 用户未登录
+2026-05-29 22:58:02,261 - WARNING - Baostock 查询失败 300825: 用户未登录
+2026-05-29 22:58:03,758 - WARNING - Baostock 查询失败 300863: 用户未登录
+2026-05-29 22:58:05,014 - WARNING - Baostock 查询失败 300893: 用户未登录
+2026-05-29 22:58:06,112 - WARNING - Baostock 查询失败 300912: 用户未登录
+2026-05-29 22:58:07,576 - WARNING - Baostock 查询失败 300928: 用户未登录
+2026-05-29 22:58:09,102 - WARNING - Baostock 查询失败 300969: 用户未登录
+2026-05-29 22:58:34,020 - INFO - Baostock 登录成功
+2026-05-29 23:03:10,454 - INFO - 补充历史: 000918 嘉凯城 | 当前 1 天 (2026-05-29~2026-05-29) | 目标 300 天 | 拉取范围 2024-05-29~2026-05-28
+2026-05-29 23:03:10,620 - INFO - Baostock 登录成功
+2026-05-29 23:03:10,689 - INFO - 补充历史: 000918 无更早期数据可拉取
+2026-05-29 23:03:28,724 - INFO - 补充历史: 000001 平安银行 | 当前 183 天 (2025-08-22~2026-05-29) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:03:28,797 - INFO - Baostock 登录成功
+2026-05-29 23:03:29,244 - INFO - 补充历史完成: 000001 平安银行 | 新增 484 天 (旧范围外), 总计 667 天 (2023-08-23~2026-05-29)
+2026-05-29 23:05:06,246 - INFO - 补充历史: 000918 嘉凯城 | 当前 1 天 (2026-05-29~2026-05-29) | 目标 300 天 | 拉取范围 2024-05-29~2026-05-28
+2026-05-29 23:05:06,335 - INFO - Baostock 登录成功
+2026-05-29 23:05:06,373 - INFO - 补充历史: 000918 无更早期数据可拉取
+2026-05-29 23:05:06,374 - INFO - 补充历史: 600823 世茂股份 | 当前 1 天 (2026-05-29~2026-05-29) | 目标 300 天 | 拉取范围 2024-05-29~2026-05-28
+2026-05-29 23:05:06,428 - INFO - 补充历史完成: 600823 世茂股份 | 新增 12 天 (旧范围外), 总计 13 天 (2024-05-29~2026-05-29)
+2026-05-29 23:05:06,428 - INFO - 补充历史: 301666 大普微 | 当前 29 天 (2026-04-16~2026-05-29) | 目标 300 天 | 拉取范围 2024-04-16~2026-04-15
+2026-05-29 23:05:06,465 - INFO - 补充历史: 301666 无更早期数据可拉取
+2026-05-29 23:05:06,466 - INFO - 补充历史: 301696 三瑞智能 | 当前 33 天 (2026-04-10~2026-05-29) | 目标 300 天 | 拉取范围 2024-04-10~2026-04-09
+2026-05-29 23:05:06,522 - INFO - 补充历史: 301696 无更早期数据可拉取
+2026-05-29 23:05:06,523 - INFO - 补充历史: 301682 宏明电子 | 当前 44 天 (2026-03-25~2026-05-29) | 目标 300 天 | 拉取范围 2024-03-25~2026-03-24
+2026-05-29 23:05:06,558 - INFO - 补充历史: 301682 无更早期数据可拉取
+2026-05-29 23:05:06,559 - INFO - 补充历史: 301638 南网数字 | 当前 126 天 (2025-11-18~2026-05-28) | 目标 300 天 | 拉取范围 2023-11-19~2025-11-17
+2026-05-29 23:05:06,595 - INFO - 补充历史: 301638 无更早期数据可拉取
+2026-05-29 23:05:06,596 - INFO - 补充历史: 000012 南玻A | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:08,588 - INFO - 补充历史完成: 000012 南玻A | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:08,588 - INFO - 补充历史: 000014 沙河股份 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:08,943 - INFO - 补充历史完成: 000014 沙河股份 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:08,943 - INFO - 补充历史: 000055 方大集团 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:09,167 - INFO - 补充历史完成: 000055 方大集团 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:09,168 - INFO - 补充历史: 000056 皇庭国际 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:09,554 - INFO - 补充历史完成: 000056 皇庭国际 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:09,555 - INFO - 补充历史: 000063 中兴通讯 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:10,471 - INFO - 补充历史完成: 000063 中兴通讯 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:10,472 - INFO - 补充历史: 000089 深圳机场 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:10,752 - INFO - 补充历史完成: 000089 深圳机场 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:10,752 - INFO - 补充历史: 000301 东方盛虹 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:11,347 - INFO - 补充历史完成: 000301 东方盛虹 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:11,348 - INFO - 补充历史: 000338 潍柴动力 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:12,861 - INFO - 补充历史完成: 000338 潍柴动力 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:12,861 - INFO - 补充历史: 000408 藏格矿业 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:13,316 - INFO - 补充历史完成: 000408 藏格矿业 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:13,316 - INFO - 补充历史: 000550 江铃汽车 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:13,980 - INFO - 补充历史完成: 000550 江铃汽车 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:13,980 - INFO - 补充历史: 000581 威孚高科 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:14,306 - INFO - 补充历史完成: 000581 威孚高科 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:14,306 - INFO - 补充历史: 000619 海螺新材 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:15,459 - INFO - 补充历史完成: 000619 海螺新材 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:15,459 - INFO - 补充历史: 000625 长安汽车 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:15,692 - INFO - 补充历史完成: 000625 长安汽车 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:15,693 - INFO - 补充历史: 000630 铜陵有色 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:15,864 - INFO - 补充历史完成: 000630 铜陵有色 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:15,865 - INFO - 补充历史: 000672 上峰水泥 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:16,093 - INFO - 补充历史完成: 000672 上峰水泥 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:16,093 - INFO - 补充历史: 000688 国城矿业 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:16,521 - INFO - 补充历史完成: 000688 国城矿业 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:16,522 - INFO - 补充历史: 000708 中信特钢 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:16,868 - INFO - 补充历史完成: 000708 中信特钢 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:16,868 - INFO - 补充历史: 000725 京东方A | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:17,029 - INFO - 补充历史完成: 000725 京东方A | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:17,029 - INFO - 补充历史: 000791 甘肃能源 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:17,188 - INFO - 补充历史完成: 000791 甘肃能源 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:17,188 - INFO - 补充历史: 000792 盐湖股份 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:17,328 - INFO - 补充历史完成: 000792 盐湖股份 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:17,328 - INFO - 补充历史: 000807 云铝股份 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:17,823 - INFO - 补充历史完成: 000807 云铝股份 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:17,824 - INFO - 补充历史: 000825 太钢不锈 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:18,881 - INFO - 补充历史完成: 000825 太钢不锈 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:18,881 - INFO - 补充历史: 000830 鲁西化工 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:19,141 - INFO - 补充历史完成: 000830 鲁西化工 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:19,142 - INFO - 补充历史: 000848 承德露露 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:19,553 - INFO - 补充历史完成: 000848 承德露露 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:19,554 - INFO - 补充历史: 000875 电投绿能 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:19,853 - INFO - 补充历史完成: 000875 电投绿能 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:19,853 - INFO - 补充历史: 000876 新希望 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:20,752 - INFO - 补充历史完成: 000876 新希望 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:20,753 - INFO - 补充历史: 000887 中鼎股份 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:25,116 - INFO - 补充历史完成: 000887 中鼎股份 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:25,117 - INFO - 补充历史: 000895 双汇发展 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:25,399 - INFO - 补充历史完成: 000895 双汇发展 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:25,400 - INFO - 补充历史: 000898 鞍钢股份 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:26,140 - INFO - 补充历史完成: 000898 鞍钢股份 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:26,141 - INFO - 补充历史: 000905 厦门港务 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:26,626 - INFO - 补充历史完成: 000905 厦门港务 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:26,626 - INFO - 补充历史: 000932 华菱钢铁 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:26,950 - INFO - 补充历史完成: 000932 华菱钢铁 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:26,950 - INFO - 补充历史: 000938 紫光股份 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:27,190 - INFO - 补充历史完成: 000938 紫光股份 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:27,191 - INFO - 补充历史: 000951 中国重汽 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:27,390 - INFO - 补充历史完成: 000951 中国重汽 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:27,390 - INFO - 补充历史: 000958 电投产融 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:27,638 - INFO - 补充历史完成: 000958 电投产融 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:27,639 - INFO - 补充历史: 000959 首钢股份 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:28,857 - INFO - 补充历史完成: 000959 首钢股份 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:28,858 - INFO - 补充历史: 000960 锡业股份 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:30,048 - INFO - 补充历史完成: 000960 锡业股份 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:30,048 - INFO - 补充历史: 000966 长源电力 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:30,524 - INFO - 补充历史完成: 000966 长源电力 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:30,525 - INFO - 补充历史: 000975 山金国际 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:30,797 - INFO - 补充历史完成: 000975 山金国际 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:30,797 - INFO - 补充历史: 000977 浪潮信息 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:31,397 - INFO - 补充历史完成: 000977 浪潮信息 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:31,397 - INFO - 补充历史: 001872 招商港口 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:32,625 - INFO - 补充历史完成: 001872 招商港口 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:32,626 - INFO - 补充历史: 002008 大族激光 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:32,863 - INFO - 补充历史完成: 002008 大族激光 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:32,863 - INFO - 补充历史: 002027 分众传媒 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:33,237 - INFO - 补充历史完成: 002027 分众传媒 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:33,238 - INFO - 补充历史: 002043 兔宝宝 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:33,926 - INFO - 补充历史完成: 002043 兔宝宝 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:33,927 - INFO - 补充历史: 002048 宁波华翔 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:34,308 - INFO - 补充历史完成: 002048 宁波华翔 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:34,309 - INFO - 补充历史: 002049 紫光国微 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:34,881 - INFO - 补充历史完成: 002049 紫光国微 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:34,882 - INFO - 补充历史: 002050 三花智控 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:35,581 - INFO - 补充历史完成: 002050 三花智控 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:35,581 - INFO - 补充历史: 002074 国轩高科 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:36,624 - INFO - 补充历史完成: 002074 国轩高科 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:36,624 - INFO - 补充历史: 002082 万邦德 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:36,856 - INFO - 补充历史完成: 002082 万邦德 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:36,856 - INFO - 补充历史: 002085 万丰奥威 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:37,124 - INFO - 补充历史完成: 002085 万丰奥威 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:37,125 - INFO - 补充历史: 002101 广东鸿图 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:37,329 - INFO - 补充历史完成: 002101 广东鸿图 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:37,330 - INFO - 补充历史: 002110 三钢闽光 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:37,998 - INFO - 补充历史完成: 002110 三钢闽光 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:37,999 - INFO - 补充历史: 002126 银轮股份 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:38,681 - INFO - 补充历史完成: 002126 银轮股份 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:38,681 - INFO - 补充历史: 002129 TCL中环 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:38,851 - INFO - 补充历史完成: 002129 TCL中环 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:38,852 - INFO - 补充历史: 002146 荣盛发展 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:39,327 - INFO - 补充历史完成: 002146 荣盛发展 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:39,327 - INFO - 补充历史: 002156 通富微电 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:40,054 - INFO - 补充历史完成: 002156 通富微电 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:40,054 - INFO - 补充历史: 002163 海南发展 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:40,500 - INFO - 补充历史完成: 002163 海南发展 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:40,500 - INFO - 补充历史: 002180 纳思达 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:41,004 - INFO - 补充历史完成: 002180 纳思达 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:41,005 - INFO - 补充历史: 002185 华天科技 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:41,755 - INFO - 补充历史完成: 002185 华天科技 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:41,755 - INFO - 补充历史: 002190 成飞集成 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:42,981 - INFO - 补充历史完成: 002190 成飞集成 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:42,982 - INFO - 补充历史: 002194 武汉凡谷 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:43,284 - INFO - 补充历史完成: 002194 武汉凡谷 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:43,284 - INFO - 补充历史: 002201 正威新材 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:43,519 - INFO - 补充历史完成: 002201 正威新材 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:43,520 - INFO - 补充历史: 002216 三全食品 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:43,965 - INFO - 补充历史完成: 002216 三全食品 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:43,966 - INFO - 补充历史: 002230 科大讯飞 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:44,793 - INFO - 补充历史完成: 002230 科大讯飞 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:44,793 - INFO - 补充历史: 002233 塔牌集团 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:45,143 - INFO - 补充历史完成: 002233 塔牌集团 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:45,144 - INFO - 补充历史: 002240 盛新锂能 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:46,004 - INFO - 补充历史完成: 002240 盛新锂能 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:46,005 - INFO - 补充历史: 002247 聚力文化 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:46,189 - INFO - 补充历史完成: 002247 聚力文化 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:46,190 - INFO - 补充历史: 002281 光迅科技 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:46,647 - INFO - 补充历史完成: 002281 光迅科技 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:46,648 - INFO - 补充历史: 002284 亚太股份 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:47,246 - INFO - 补充历史完成: 002284 亚太股份 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:47,246 - INFO - 补充历史: 002311 海大集团 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:49,149 - INFO - 补充历史完成: 002311 海大集团 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:49,150 - INFO - 补充历史: 002313 日海智能 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:50,277 - INFO - 补充历史完成: 002313 日海智能 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:50,277 - INFO - 补充历史: 002323 雅博股份 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:50,502 - INFO - 补充历史完成: 002323 雅博股份 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:50,502 - INFO - 补充历史: 002328 新朋股份 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:50,992 - INFO - 补充历史完成: 002328 新朋股份 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:50,993 - INFO - 补充历史: 002333 罗普斯金 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:05:52,184 - INFO - 补充历史完成: 002333 罗普斯金 | 新增 484 天 (旧范围外), 总计 666 天 (2023-08-23~2026-05-28)
+2026-05-29 23:05:52,185 - INFO - 补充历史: 002352 顺丰控股 | 当前 182 天 (2025-08-22~2026-05-28) | 目标 300 天 | 拉取范围 2023-08-23~2025-08-21
+2026-05-29 23:20:45,942 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:20:49,200 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:20:54,317 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:20:56,086 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:20:56,965 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:20:57,666 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:20:58,872 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:21:21,541 - WARNING - Baostock 网络错误 000918 (第1次): 网络接收错误。
+2026-05-29 23:21:21,541 - INFO - 等待 1s 后重试 000918...
+2026-05-29 23:21:22,627 - INFO - Baostock 登录成功
+2026-05-29 23:22:51,516 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:22:52,530 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:23:25,123 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:23:41,113 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:23:42,337 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:24:15,305 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:24:16,045 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:25:26,996 - WARNING - 跳过 301666 大普微: 数据不足 (仅29天)
+2026-05-29 23:25:26.997128 - 跳过 301666 大普微: 数据不足 (仅29天)
+2026-05-29 23:25:28,348 - WARNING - 跳过 301682 宏明电子: 数据不足 (仅44天)
+2026-05-29 23:25:28.348948 - 跳过 301682 宏明电子: 数据不足 (仅44天)
+2026-05-29 23:30:28,483 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:30:29,113 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:30:50,489 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:30:52,102 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:31:04,624 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:31:10,236 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:31:10,700 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:31:33,228 - WARNING - Baostock 网络错误 000918 (第1次): 网络接收错误。
+2026-05-29 23:31:33,228 - INFO - 等待 1s 后重试 000918...
+2026-05-29 23:31:34,333 - INFO - Baostock 登录成功
+2026-05-29 23:31:40,704 - WARNING - 跳过 301666 大普微: 数据不足 (仅29天)
+2026-05-29 23:31:40.704902 - 跳过 301666 大普微: 数据不足 (仅29天)
+2026-05-29 23:31:40,759 - WARNING - 跳过 301682 宏明电子: 数据不足 (仅44天)
+2026-05-29 23:31:40.759804 - 跳过 301682 宏明电子: 数据不足 (仅44天)

@@ -1,0 +1,21 @@
+方案一：在代码中临时取消代理（推荐，无需修改系统设置）
+在你的 data_fetcher.py 文件中，在发送请求前清除环境变量中的代理设置：
+
+python
+import os
+
+def fetch_stock_data_with_retry(symbol, start_date, end_date, max_retries=2):
+    # 临时清除代理，避免被拦截
+    old_http_proxy = os.environ.pop('HTTP_PROXY', None)
+    old_https_proxy = os.environ.pop('HTTPS_PROXY', None)
+    try:
+        # 原有 akshare 调用逻辑
+        df = ak.stock_zh_a_hist(...)
+        # ...
+    finally:
+        # 恢复代理（如果需要）
+        if old_http_proxy:
+            os.environ['HTTP_PROXY'] = old_http_proxy
+        if old_https_proxy:
+            os.environ['HTTPS_PROXY'] = old_https_proxy
+    return df

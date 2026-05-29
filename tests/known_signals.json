@@ -1,0 +1,30 @@
+{
+    "description": "已知信号股票及日期，用于验收测试验证",
+    "last_updated": "2026-05-29",
+    "test_cases": [
+        {
+            "id": 1,
+            "code": "600030",
+            "name": "中信证券",
+            "condition": "A",
+            "expected_date_range": ["2024-09-20", "2024-09-30"],
+            "description": "2024年9月下旬受政策利好刺激，股价放量突破三条EMA均线"
+        },
+        {
+            "id": 2,
+            "code": "300308",
+            "name": "中际旭创",
+            "condition": "B",
+            "expected_date_range": ["2023-11-15", "2024-01-15"],
+            "description": "2023年12月前后，三条EMA均线相互靠拢形成粘合形态"
+        },
+        {
+            "id": 3,
+            "code": "000001",
+            "name": "平安银行",
+            "condition": "KLINE_SELF_TEST",
+            "expected_date_range": [],
+            "description": "自测K线图：红涨绿跌、EMA线平滑、成交量对齐"
+        }
+    ]
+}
