@@ -19,7 +19,7 @@ def plot_kline_with_emas(
     name: str,
     signal_date: str,
     signal_types: list[str],
-    days: int = 60,
+    days: int = 120,
 ) -> go.Figure:
     """
     绘制交互式 K 线图（含 EMA 均线、成交量、信号标记）。

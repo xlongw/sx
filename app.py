@@ -20,6 +20,7 @@ from config import (
     DEFAULT_MAX_STOCKS,
     DEFAULT_DAYS,
     MIN_DAYS_REQUIRED,
+    KLINE_DISPLAY_DAYS,
     DATA_SOURCE,
 )
 from data_fetcher import bs_login, bs_logout
@@ -70,7 +71,7 @@ def parse_custom_codes(text: str) -> list[tuple[str, str]]:
 
 
 # ── K线图独立绘制函数 ────────────────────────────────────
-def plot_kline_for_stock(code: str, name: str, days: int = 60):
+def plot_kline_for_stock(code: str, name: str, days: int = KLINE_DISPLAY_DAYS):
     """
     加载股票数据并绘制 K 线图（不依赖筛选结果）。
     供筛选结果和自选股两处共用。
@@ -85,8 +86,8 @@ def plot_kline_for_stock(code: str, name: str, days: int = 60):
         显示最近多少个交易日。
     """
     df = load_from_db(code, limit=max(days, DEFAULT_DAYS))
-    if df is None or len(df) < 60:
-        st.warning(f"股票 {code} 数据不足（需要至少60个交易日），请先刷新数据。")
+    if df is None or len(df) < KLINE_DISPLAY_DAYS:
+        st.warning(f"股票 {code} 数据不足（需要至少{KLINE_DISPLAY_DAYS}个交易日），请先刷新数据。")
         return
 
     fig = plot_kline_with_emas(
@@ -360,7 +361,10 @@ def main():
             try:
                 df = load_from_db(code, limit=DEFAULT_DAYS)
                 if df is None or len(df) < MIN_DAYS_REQUIRED:
-                    df = fetch_and_cache_stock(code, name, days=DEFAULT_DAYS, source=data_source)
+                    # 数据不足时跳过，不触发网络拉取（网络拉取统一在「刷新数据」时完成）
+                    logger.info(f"筛选跳过: {code} {name} 数据不足 ({len(df) if df is not None else 0}天)")
+                    screened += 1
+                    continue
 
                 if df is not None and len(df) >= MIN_DAYS_REQUIRED:
                     signals = screen_single_stock(
@@ -487,14 +491,14 @@ def main():
                 if not sel_row.empty:
                     signal_types = str(sel_row.iloc[0]["signal"]).split(" + ")
                 df_kline = load_from_db(sel_code, limit=DEFAULT_DAYS)
-                if df_kline is not None and len(df_kline) >= 60:
+                if df_kline is not None and len(df_kline) >= KLINE_DISPLAY_DAYS:
                     fig = plot_kline_with_emas(
                         df_kline,
                         sel_code,
                         st.session_state.get("selected_name", ""),
                         str(df_kline["date"].iloc[-1])[:10],
                         signal_types,
-                        days=60,
+                        days=KLINE_DISPLAY_DAYS,
                     )
                     st.plotly_chart(fig, use_container_width=True)
                 else:

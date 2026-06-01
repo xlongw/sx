@@ -492,3 +492,206 @@
 2026-05-29 23:31:40.704902 - 跳过 301666 大普微: 数据不足 (仅29天)
 2026-05-29 23:31:40,759 - WARNING - 跳过 301682 宏明电子: 数据不足 (仅44天)
 2026-05-29 23:31:40.759804 - 跳过 301682 宏明电子: 数据不足 (仅44天)
+2026-05-29 23:31:50,516 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:31:51,156 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:31:54,260 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:31:57,240 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:32:00,689 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:32:03,571 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:32:06,935 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:37:56,302 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:38:00,565 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:38:06,674 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:38:27,535 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:38:30,329 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:38:32,512 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:38:34,856 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:38:35,987 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:38:37,855 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:38:38,920 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:38:40,076 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:39:16,367 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:39:21,270 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:39:21,856 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:39:24,149 - WARNING - AkShare 获取异常 000918 (第1次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:24,150 - INFO - 等待 1s 后重试 000918...
+2026-05-29 23:39:25,411 - WARNING - AkShare 获取异常 000918 (第2次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:25,411 - INFO - 等待 2s 后重试 000918...
+2026-05-29 23:39:27,693 - WARNING - AkShare 获取异常 000918 (第3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:27,693 - ERROR - AkShare 获取失败 000918 (已重试3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:28,251 - WARNING - AkShare 获取异常 600823 (第1次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:28,251 - INFO - 等待 1s 后重试 600823...
+2026-05-29 23:39:29,529 - WARNING - AkShare 获取异常 600823 (第2次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:29,529 - INFO - 等待 2s 后重试 600823...
+2026-05-29 23:39:31,788 - WARNING - AkShare 获取异常 600823 (第3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:31,788 - ERROR - AkShare 获取失败 600823 (已重试3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:33,313 - WARNING - AkShare 获取异常 600213 (第1次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:33,313 - INFO - 等待 1s 后重试 600213...
+2026-05-29 23:39:34,567 - WARNING - AkShare 获取异常 600213 (第2次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:34,567 - INFO - 等待 2s 后重试 600213...
+2026-05-29 23:39:36,846 - WARNING - AkShare 获取异常 600213 (第3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:36,846 - ERROR - AkShare 获取失败 600213 (已重试3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:37,102 - WARNING - AkShare 获取异常 600297 (第1次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:37,103 - INFO - 等待 1s 后重试 600297...
+2026-05-29 23:39:38,381 - WARNING - AkShare 获取异常 600297 (第2次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:38,381 - INFO - 等待 2s 后重试 600297...
+2026-05-29 23:39:40,661 - WARNING - AkShare 获取异常 600297 (第3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:40,661 - ERROR - AkShare 获取失败 600297 (已重试3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:42,578 - WARNING - AkShare 获取异常 301014 (第1次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:42,578 - INFO - 等待 1s 后重试 301014...
+2026-05-29 23:39:43,844 - WARNING - AkShare 获取异常 301014 (第2次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:43,844 - INFO - 等待 2s 后重试 301014...
+2026-05-29 23:39:46,142 - WARNING - AkShare 获取异常 301014 (第3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:46,143 - ERROR - AkShare 获取失败 301014 (已重试3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:47,640 - WARNING - AkShare 获取异常 301271 (第1次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:47,641 - INFO - 等待 1s 后重试 301271...
+2026-05-29 23:39:48,888 - WARNING - AkShare 获取异常 301271 (第2次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:48,888 - INFO - 等待 2s 后重试 301271...
+2026-05-29 23:39:51,140 - WARNING - AkShare 获取异常 301271 (第3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:51,140 - ERROR - AkShare 获取失败 301271 (已重试3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:51,681 - WARNING - AkShare 获取异常 301334 (第1次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:51,681 - INFO - 等待 1s 后重试 301334...
+2026-05-29 23:39:52,902 - WARNING - AkShare 获取异常 301334 (第2次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:52,903 - INFO - 等待 2s 后重试 301334...
+2026-05-29 23:39:55,127 - WARNING - AkShare 获取异常 301334 (第3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:55,127 - ERROR - AkShare 获取失败 301334 (已重试3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:56,034 - WARNING - AkShare 获取异常 301666 (第1次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:56,034 - INFO - 等待 1s 后重试 301666...
+2026-05-29 23:39:57,267 - WARNING - AkShare 获取异常 301666 (第2次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:57,268 - INFO - 等待 2s 后重试 301666...
+2026-05-29 23:39:59,483 - WARNING - AkShare 获取异常 301666 (第3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:59,483 - ERROR - AkShare 获取失败 301666 (已重试3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:59,689 - WARNING - AkShare 获取异常 301682 (第1次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:39:59,690 - INFO - 等待 1s 后重试 301682...
+2026-05-29 23:40:00,900 - WARNING - AkShare 获取异常 301682 (第2次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:40:00,901 - INFO - 等待 2s 后重试 301682...
+2026-05-29 23:40:03,124 - WARNING - AkShare 获取异常 301682 (第3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:40:03,124 - ERROR - AkShare 获取失败 301682 (已重试3次): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-05-29 23:40:07,703 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:40:09,067 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:40:11,607 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:40:12,175 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:40:15,313 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:40:16,148 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:40:17,804 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:40:19,033 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:40:22,272 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:42:37,592 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:42:37,786 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-05-29 23:42:42,233 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 17:57:32,820 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 17:57:33,016 - INFO - Baostock 登录成功
+2026-06-01 17:57:36,747 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 17:57:37,742 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 17:57:46,356 - WARNING - 跳过 301666 大普微: 数据不足 (仅30天)
+2026-06-01 17:57:46.356534 - 跳过 301666 大普微: 数据不足 (仅30天)
+2026-06-01 17:57:46,769 - WARNING - 跳过 301682 宏明电子: 数据不足 (仅45天)
+2026-06-01 17:57:46.769766 - 跳过 301682 宏明电子: 数据不足 (仅45天)
+2026-06-01 17:57:50,026 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 17:57:52,152 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 17:57:53,409 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 17:57:54,157 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 17:57:59,030 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 18:47:18,014 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 18:53:32,672 - INFO - Baostock 登录成功
+2026-06-01 18:54:37,609 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 18:54:41,806 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 18:54:42,122 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 18:54:46,665 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 18:54:48,045 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:05:54,762 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:05:58,644 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:06:00,541 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:13:47,222 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:13:50,526 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:13:54,447 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:13:56,141 - INFO - 筛选跳过: 000918 嘉凯城 数据不足 (1天)
+2026-06-01 19:13:56,431 - INFO - 筛选跳过: 600823 世茂股份 数据不足 (13天)
+2026-06-01 19:13:57,591 - INFO - 筛选跳过: 600213 亚星客车 数据不足 (0天)
+2026-06-01 19:13:57,601 - INFO - 筛选跳过: 600297 广汇汽车 数据不足 (0天)
+2026-06-01 19:13:59,159 - INFO - 筛选跳过: 301014 瑞华泰 数据不足 (0天)
+2026-06-01 19:14:00,340 - INFO - 筛选跳过: 301271 华如科技 数据不足 (0天)
+2026-06-01 19:14:00,644 - INFO - 筛选跳过: 301334 亚通精工 数据不足 (0天)
+2026-06-01 19:14:01,297 - INFO - 筛选跳过: 301666 大普微 数据不足 (30天)
+2026-06-01 19:14:01,298 - INFO - 筛选跳过: 301682 宏明电子 数据不足 (45天)
+2026-06-01 19:14:08,554 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:14:11,621 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:14:12,150 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:14:13,904 - INFO - 筛选跳过: 000918 嘉凯城 数据不足 (1天)
+2026-06-01 19:14:14,191 - INFO - 筛选跳过: 600823 世茂股份 数据不足 (13天)
+2026-06-01 19:14:15,400 - INFO - 筛选跳过: 600213 亚星客车 数据不足 (0天)
+2026-06-01 19:14:15,412 - INFO - 筛选跳过: 600297 广汇汽车 数据不足 (0天)
+2026-06-01 19:14:16,992 - INFO - 筛选跳过: 301014 瑞华泰 数据不足 (0天)
+2026-06-01 19:14:18,218 - INFO - 筛选跳过: 301271 华如科技 数据不足 (0天)
+2026-06-01 19:14:18,512 - INFO - 筛选跳过: 301334 亚通精工 数据不足 (0天)
+2026-06-01 19:14:19,147 - INFO - 筛选跳过: 301666 大普微 数据不足 (30天)
+2026-06-01 19:14:19,148 - INFO - 筛选跳过: 301682 宏明电子 数据不足 (45天)
+2026-06-01 19:14:56,184 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:14:57,593 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:14:58,055 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:14:58,272 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:14:58,461 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:14:58,651 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:15:01,627 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:15:10,377 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:15:11,164 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:15:11,763 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:15:12,134 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:15:12,359 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:15:12,525 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:19:37,143 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:19:37,258 - INFO - Baostock 登录成功
+2026-06-01 19:19:40,995 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:19:41,526 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:19:43,208 - INFO - 筛选跳过: 000918 嘉凯城 数据不足 (1天)
+2026-06-01 19:19:43,485 - INFO - 筛选跳过: 600823 世茂股份 数据不足 (13天)
+2026-06-01 19:19:44,592 - INFO - 筛选跳过: 600213 亚星客车 数据不足 (0天)
+2026-06-01 19:19:44,603 - INFO - 筛选跳过: 600297 广汇汽车 数据不足 (0天)
+2026-06-01 19:19:46,103 - INFO - 筛选跳过: 301014 瑞华泰 数据不足 (0天)
+2026-06-01 19:19:52,971 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:19:53,883 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:20:00,083 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:20:10,330 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:20:41,198 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:20:45,977 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:21:07,033 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:21:07,465 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:21:09,215 - INFO - 筛选跳过: 000918 嘉凯城 数据不足 (1天)
+2026-06-01 19:21:09,485 - INFO - 筛选跳过: 600823 世茂股份 数据不足 (13天)
+2026-06-01 19:21:10,578 - INFO - 筛选跳过: 600213 亚星客车 数据不足 (0天)
+2026-06-01 19:21:10,591 - INFO - 筛选跳过: 600297 广汇汽车 数据不足 (0天)
+2026-06-01 19:21:12,129 - INFO - 筛选跳过: 301014 瑞华泰 数据不足 (0天)
+2026-06-01 19:21:13,267 - INFO - 筛选跳过: 301271 华如科技 数据不足 (0天)
+2026-06-01 19:21:13,559 - INFO - 筛选跳过: 301334 亚通精工 数据不足 (0天)
+2026-06-01 19:21:14,195 - INFO - 筛选跳过: 301666 大普微 数据不足 (30天)
+2026-06-01 19:21:14,197 - INFO - 筛选跳过: 301682 宏明电子 数据不足 (45天)
+2026-06-01 19:21:14,657 - INFO - 筛选跳过: 301696 三瑞智能 数据不足 (33天)
+2026-06-01 19:21:31,743 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:21:32,635 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:21:41,280 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:21:42,298 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:21:44,026 - INFO - 筛选跳过: 000918 嘉凯城 数据不足 (1天)
+2026-06-01 19:21:44,301 - INFO - 筛选跳过: 600823 世茂股份 数据不足 (13天)
+2026-06-01 19:21:45,431 - INFO - 筛选跳过: 600213 亚星客车 数据不足 (0天)
+2026-06-01 19:21:45,443 - INFO - 筛选跳过: 600297 广汇汽车 数据不足 (0天)
+2026-06-01 19:21:46,921 - INFO - 筛选跳过: 301014 瑞华泰 数据不足 (0天)
+2026-06-01 19:21:48,114 - INFO - 筛选跳过: 301271 华如科技 数据不足 (0天)
+2026-06-01 19:21:48,413 - INFO - 筛选跳过: 301334 亚通精工 数据不足 (0天)
+2026-06-01 19:21:49,042 - INFO - 筛选跳过: 301666 大普微 数据不足 (30天)
+2026-06-01 19:21:49,044 - INFO - 筛选跳过: 301682 宏明电子 数据不足 (45天)
+2026-06-01 19:21:49,482 - INFO - 筛选跳过: 301696 三瑞智能 数据不足 (33天)
+2026-06-01 19:21:53,141 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:21:54,055 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:22:01,343 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:22:06,242 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:22:32,084 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 19:22:50,633 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 20:24:10,167 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 20:24:15,602 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 20:24:18,113 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 20:24:21,269 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 20:25:04,948 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 20:25:08,663 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 20:25:11,483 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 20:25:20,286 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
+2026-06-01 20:25:23,262 - INFO - EMA 缓存回填: 无需更新，所有数据均已缓存 EMA
