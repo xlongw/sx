@@ -50,12 +50,19 @@ def calc_indicators(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def check_condition_a(df: pd.DataFrame) -> pd.Series:
+def check_condition_a(df: pd.DataFrame, max_deviation: float = 0.15) -> pd.Series:
     """
     条件 A：首次站上三条 EMA 均线。
 
     今日收盘价同时大于 EMA21、EMA55、EMA120，
-    且昨日不满足此条件（即今天是突破的第一个交易日）。
+    且昨日不满足此条件（即今天是突破的第一个交易日），
+    且收盘价偏离三条 EMA 均值不超过 max_deviation（默认 15%）。
+
+    Parameters
+    ----------
+    max_deviation : float
+        收盘价偏离 EMA 均值的最大比例，默认 0.15（15%）。
+        设为 1.0 可完全禁用偏离度约束。
 
     Returns
     -------
@@ -66,7 +73,14 @@ def check_condition_a(df: pd.DataFrame) -> pd.Series:
         & (df["close"] > df["ema55"])
         & (df["close"] > df["ema120"])
     )
-    return above_all & ~above_all.shift(1).fillna(False)
+    first_break = above_all & ~above_all.shift(1).fillna(False)
+
+    # 偏离度约束：防止选出已大幅远离均线的股票
+    ema_mean = df[["ema21", "ema55", "ema120"]].mean(axis=1)
+    deviation = (df["close"] - ema_mean).abs() / ema_mean
+    within_range = deviation <= max_deviation
+
+    return first_break & within_range
 
 
 def check_condition_b(df: pd.DataFrame, threshold: float = 1.02) -> pd.Series:
@@ -122,3 +136,24 @@ def check_condition_c(df: pd.DataFrame, threshold: float = 0.02) -> pd.Series:
     low_vol = low_vol_atr | low_vol_range
 
     return near_emas & low_vol
+
+
+def check_condition_d(df: pd.DataFrame, vol_multiplier: float = 1.5) -> pd.Series:
+    """
+    条件 D：成交量确认 — 今日成交量明显放大。
+
+    今日成交量 > 20日均量 × vol_multiplier，表明有资金介入。
+
+    Parameters
+    ----------
+    vol_multiplier : float
+        成交量倍数阈值，默认 1.5（即今日量 > 20日均量的 1.5 倍）。
+
+    Returns
+    -------
+    pd.Series (bool)
+    """
+    if "volume" not in df.columns:
+        return pd.Series([False] * len(df), index=df.index)
+    vol_ma20 = df["volume"].rolling(20).mean()
+    return df["volume"] > vol_ma20 * vol_multiplier

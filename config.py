@@ -39,6 +39,67 @@ FETCH_RANDOM_DELAY_MAX = 1.5          # 请求前随机延迟最大值（秒）
 # ── 数据源选择 ──────────────────────────────────────────
 DATA_SOURCE = "baostock"              # 默认数据源: "baostock" 或 "akshare"
 
+# ── 股票池过滤 ──────────────────────────────────────────
+# 已知退市/ST/问题股票（数据源无法正常返回数据的代码）
+KNOWN_BAD_CODES = {
+    "000918",  # 嘉凯城 — 已退市
+    "600823",  # 世茂股份 — 退市
+    "600213",  # 亚星客车 — ST/退市
+    "600297",  # 广汇汽车 — 退市
+    "600375",  # 汉马科技 — ST
+    "600303",  # ST曙光
+    "000656",  # 金科股份 — ST
+    "000667",  # 美好置业 — 退市
+    "600322",  # 天房发展 — ST
+    "600340",  # 华夏幸福 — 债务重组
+    "600647",  # 同达创业 — ST
+}
+
+
+def is_mainboard(code: str) -> bool:
+    """判断股票代码是否属于沪深主板（非创业板/科创板/北交所）。"""
+    code = str(code).strip()
+    # 上海主板: 60xxxx
+    if code.startswith("60"):
+        return True
+    # 深圳主板: 00xxxx (排除 001xxx 和 003xxx 的深市主板新股代码段)
+    if code.startswith("00") and len(code) >= 4:
+        # 000xxx, 001xxx, 002xxx, 003xxx 都是深市主板/中小板范围
+        return True
+    return False
+
+
+def filter_stock_list(stock_list: list[tuple[str, str]]) -> list[tuple[str, str]]:
+    """
+    过滤股票列表：移除非主板、已知退市/ST股票。
+
+    Parameters
+    ----------
+    stock_list : list[tuple[str, str]]
+        原始 [(code, name), ...] 列表。
+
+    Returns
+    -------
+    list[tuple[str, str]]
+        过滤后的列表。
+    """
+    result = []
+    for code, name in stock_list:
+        code = str(code).strip()
+        # 跳过已知问题股票
+        if code in KNOWN_BAD_CODES:
+            continue
+        # 只保留主板
+        if not is_mainboard(code):
+            continue
+        result.append((code, name))
+    return result
+
+
+def get_default_stocks() -> list[tuple[str, str]]:
+    """返回过滤后的默认股票列表（仅沪深主板）。"""
+    return filter_stock_list(DEFAULT_STOCKS)
+
 # ── 沪深主板默认股票列表 ─────────────────────────────────
 DEFAULT_STOCKS = [
     # ==================== 银行 ====================

@@ -1,7 +1,19 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python *)"
+      "Bash(python *)",
+      "Bash(cd /d D:\\\\mode\\\\sx)",
+      "Bash(pip list *)",
+      "Bash(streamlit run *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8501)",
+      "Bash(pkill -f \"streamlit run\")",
+      "Bash(curl -s http://localhost:8501)",
+      "Bash(tasklist)",
+      "Bash(curl -s http://localhost:8501/_stcore/health)",
+      "Bash(nohup streamlit run app.py --server.headless true --server.port 8501)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\" http://localhost:8501)",
+      "Bash(bash changelog.sh \"新增\" \"创建了 CHANGELOG.md 和 changelog.sh 更新日志系统\")",
+      "Bash(bash quick-push.sh \"优化筛选引擎: 过滤非主板股票、条件A偏离度约束、条件D放量确认、增量数据拉取、EMA批量更新、连接池复用、数据仪表盘\" --log \"新增\")"
     ]
   }
 }

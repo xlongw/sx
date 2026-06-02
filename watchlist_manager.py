@@ -3,16 +3,10 @@
 Watchlist database operations — add, remove, query user's favorite stocks.
 """
 
-import sqlite3
 import pandas as pd
 from datetime import datetime
 
-from config import DB_PATH
-
-
-def _get_conn() -> sqlite3.Connection:
-    """获取数据库连接。"""
-    return sqlite3.connect(DB_PATH)
+from data_manager import _get_conn
 
 
 def init_watchlist_table() -> None:
@@ -26,7 +20,6 @@ def init_watchlist_table() -> None:
         )
     """)
     conn.commit()
-    conn.close()
 
 
 def add_to_watchlist(code: str, name: str) -> None:
@@ -37,7 +30,6 @@ def add_to_watchlist(code: str, name: str) -> None:
         (code, name, datetime.now()),
     )
     conn.commit()
-    conn.close()
 
 
 def remove_from_watchlist(code: str) -> None:
@@ -45,7 +37,6 @@ def remove_from_watchlist(code: str) -> None:
     conn = _get_conn()
     conn.execute("DELETE FROM watchlist WHERE code = ?", (code,))
     conn.commit()
-    conn.close()
 
 
 def get_watchlist() -> pd.DataFrame:
@@ -55,7 +46,6 @@ def get_watchlist() -> pd.DataFrame:
         "SELECT code, name, added_time FROM watchlist ORDER BY added_time DESC",
         conn,
     )
-    conn.close()
     return df
 
 
@@ -65,20 +55,16 @@ def is_in_watchlist(code: str) -> bool:
     row = conn.execute(
         "SELECT 1 FROM watchlist WHERE code = ?", (code,)
     ).fetchone()
-    conn.close()
     return row is not None
 
 
 def batch_add_to_watchlist(codes: list[str], names: list[str]) -> int:
     """批量添加自选股，返回新增数量。"""
-    count = 0
     conn = _get_conn()
-    for code, name in zip(codes, names):
-        conn.execute(
-            "INSERT OR REPLACE INTO watchlist (code, name, added_time) VALUES (?, ?, ?)",
-            (code, name, datetime.now()),
-        )
-        count += 1
+    rows = [(code, name, datetime.now()) for code, name in zip(codes, names)]
+    conn.executemany(
+        "INSERT OR REPLACE INTO watchlist (code, name, added_time) VALUES (?, ?, ?)",
+        rows,
+    )
     conn.commit()
-    conn.close()
-    return count
+    return len(rows)

@@ -6,6 +6,7 @@ SQLite cache management and incremental data refresh.
 import sqlite3
 import time
 import random
+import threading
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
@@ -22,36 +23,64 @@ from utils import setup_logger, log_skip, log_error
 
 logger = setup_logger(__name__)
 
+# ── 数据库连接池（模块级单例 + WAL 模式） ──────────────────
+_conn_local = threading.local()
+_conn_lock = threading.Lock()
+
+
+def _get_conn() -> sqlite3.Connection:
+    """获取当前线程的数据库连接（线程安全 + WAL 模式）。"""
+    conn = getattr(_conn_local, "conn", None)
+    if conn is None:
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA synchronous=NORMAL")
+        conn.execute("PRAGMA cache_size=-8000")  # 8MB cache
+        _conn_local.conn = conn
+    return conn
+
+
+def _close_conn() -> None:
+    """关闭当前线程的数据库连接。"""
+    conn = getattr(_conn_local, "conn", None)
+    if conn:
+        try:
+            conn.close()
+        except Exception:
+            pass
+        _conn_local.conn = None
+
 
 # ── 数据库初始化 ─────────────────────────────────────────
 def init_db() -> None:
     """创建 SQLite 表及索引（如不存在），并确保 EMA 缓存列存在。"""
-    with sqlite3.connect(DB_PATH) as conn:
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS daily_quotes (
-                code TEXT,
-                date TEXT,
-                open REAL,
-                high REAL,
-                low REAL,
-                close REAL,
-                volume REAL,
-                name TEXT,
-                PRIMARY KEY (code, date)
-            )
-        """)
-        conn.execute("""
-            CREATE INDEX IF NOT EXISTS idx_code ON daily_quotes(code)
-        """)
-        conn.execute("""
-            CREATE INDEX IF NOT EXISTS idx_date ON daily_quotes(date)
-        """)
-        # 为旧数据库添加 EMA 缓存列（幂等）
-        for col in ["ema21", "ema55", "ema120"]:
-            try:
-                conn.execute(f"ALTER TABLE daily_quotes ADD COLUMN {col} REAL")
-            except sqlite3.OperationalError:
-                pass  # 列已存在，忽略
+    conn = _get_conn()
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS daily_quotes (
+            code TEXT,
+            date TEXT,
+            open REAL,
+            high REAL,
+            low REAL,
+            close REAL,
+            volume REAL,
+            name TEXT,
+            PRIMARY KEY (code, date)
+        )
+    """)
+    conn.execute("""
+        CREATE INDEX IF NOT EXISTS idx_code ON daily_quotes(code)
+    """)
+    conn.execute("""
+        CREATE INDEX IF NOT EXISTS idx_date ON daily_quotes(date)
+    """)
+    # 为旧数据库添加 EMA 缓存列（幂等）
+    for col in ["ema21", "ema55", "ema120"]:
+        try:
+            conn.execute(f"ALTER TABLE daily_quotes ADD COLUMN {col} REAL")
+        except sqlite3.OperationalError:
+            pass  # 列已存在，忽略
+    conn.commit()
 
     # 初始化自选股表（不影响原有 daily_quotes 表）
     from watchlist_manager import init_watchlist_table
@@ -68,38 +97,42 @@ def save_to_db(df: pd.DataFrame, code: str, name: str) -> None:
     df = calc_indicators(df)
     df["code"] = code
     df["name"] = name
-    with sqlite3.connect(DB_PATH) as conn:
-        for _, row in df.iterrows():
-            conn.execute(
-                """INSERT OR REPLACE INTO daily_quotes
-                   (code, date, open, high, low, close, volume, name, ema21, ema55, ema120)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                (
-                    code,
-                    str(row["date"])[:10],
-                    float(row["open"]),
-                    float(row["high"]),
-                    float(row["low"]),
-                    float(row["close"]),
-                    float(row["volume"]),
-                    str(name),
-                    float(row["ema21"]) if pd.notna(row["ema21"]) else None,
-                    float(row["ema55"]) if pd.notna(row["ema55"]) else None,
-                    float(row["ema120"]) if pd.notna(row["ema120"]) else None,
-                ),
-            )
+    conn = _get_conn()
+    rows = [
+        (
+            code,
+            str(row["date"])[:10],
+            float(row["open"]),
+            float(row["high"]),
+            float(row["low"]),
+            float(row["close"]),
+            float(row["volume"]),
+            str(name),
+            float(row["ema21"]) if pd.notna(row["ema21"]) else None,
+            float(row["ema55"]) if pd.notna(row["ema55"]) else None,
+            float(row["ema120"]) if pd.notna(row["ema120"]) else None,
+        )
+        for _, row in df.iterrows()
+    ]
+    conn.executemany(
+        """INSERT OR REPLACE INTO daily_quotes
+           (code, date, open, high, low, close, volume, name, ema21, ema55, ema120)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        rows,
+    )
+    conn.commit()
 
 
 # ── 读取 ─────────────────────────────────────────────────
 def load_from_db(code: str, limit: int = DEFAULT_DAYS) -> pd.DataFrame:
     """从 SQLite 加载股票数据，按日期升序返回。"""
-    with sqlite3.connect(DB_PATH) as conn:
-        df = pd.read_sql_query(
-            "SELECT date, open, high, low, close, volume, name, ema21, ema55, ema120 "
-            "FROM daily_quotes WHERE code = ? ORDER BY date DESC LIMIT ?",
-            conn,
-            params=(code, limit),
-        )
+    conn = _get_conn()
+    df = pd.read_sql_query(
+        "SELECT date, open, high, low, close, volume, name, ema21, ema55, ema120 "
+        "FROM daily_quotes WHERE code = ? ORDER BY date DESC LIMIT ?",
+        conn,
+        params=(code, limit),
+    )
     if df.empty:
         return df
     df["date"] = pd.to_datetime(df["date"])
@@ -108,17 +141,17 @@ def load_from_db(code: str, limit: int = DEFAULT_DAYS) -> pd.DataFrame:
 
 def get_cached_date(code: str) -> str | None:
     """返回某股票在缓存中的最新日期，无缓存则返回 None。"""
-    with sqlite3.connect(DB_PATH) as conn:
-        row = conn.execute(
-            "SELECT MAX(date) FROM daily_quotes WHERE code = ?", (code,)
-        ).fetchone()
+    conn = _get_conn()
+    row = conn.execute(
+        "SELECT MAX(date) FROM daily_quotes WHERE code = ?", (code,)
+    ).fetchone()
     return row[0] if row and row[0] else None
 
 
 def get_all_cached_codes() -> set:
     """返回所有已缓存股票代码的集合。"""
-    with sqlite3.connect(DB_PATH) as conn:
-        rows = conn.execute("SELECT DISTINCT code FROM daily_quotes").fetchall()
+    conn = _get_conn()
+    rows = conn.execute("SELECT DISTINCT code FROM daily_quotes").fetchall()
     return {r[0] for r in rows}
 
 
@@ -136,16 +169,19 @@ def fetch_stock_data(code: str, days: int = DEFAULT_DAYS,
                      force_refresh: bool = False,
                      source: str = DATA_SOURCE) -> pd.DataFrame | None:
     """
-    获取股票数据（优先缓存，必要时从网络拉取）。
+    获取股票数据（优先缓存，增量拉取新数据）。
+
+    增量模式：如果数据库已有历史数据，仅拉取上次缓存日期之后的新交易日，
+    大幅减少网络传输量。首次拉取或 force_refresh 时拉取完整历史。
 
     Parameters
     ----------
     code : str
         股票代码。
     days : int
-        获取历史数据天数。
+        获取历史数据天数（仅首次拉取时使用）。
     force_refresh : bool
-        是否强制刷新。
+        是否强制完整刷新。
     source : str
         数据源: "baostock" 或 "akshare"。
 
@@ -153,19 +189,41 @@ def fetch_stock_data(code: str, days: int = DEFAULT_DAYS,
     -------
     pd.DataFrame or None
     """
-    end_date = datetime.now().strftime("%Y-%m-%d")
-    start_date = (datetime.now() - timedelta(days=days + 30)).strftime("%Y-%m-%d")
+    today_str = datetime.now().strftime("%Y-%m-%d")
 
     # 先查缓存
     if not force_refresh:
         cached = load_from_db(code, limit=days)
         if len(cached) >= MIN_DAYS_KLINE:
-            latest_cached = cached["date"].max()
-            if latest_cached and (datetime.now() - latest_cached).days < CACHE_VALIDITY_DAYS:
-                return cached.tail(days)
+            latest_cached_dt = cached["date"].max()
+            if latest_cached_dt:
+                latest_str = latest_cached_dt.strftime("%Y-%m-%d")
+                # 缓存已覆盖今天 → 直接返回
+                if (datetime.now() - latest_cached_dt).days < CACHE_VALIDITY_DAYS:
+                    return cached.tail(days)
 
-    # 从网络获取（使用统一调度，支持多数据源）
-    df = fetch_stock_data_unified(code, start_date, end_date, source=source)
+                # 增量拉取：仅获取缓存最新日期之后的数据
+                # start_date = 缓存最新日期 + 1天
+                inc_start = (latest_cached_dt + timedelta(days=1)).strftime("%Y-%m-%d")
+                logger.info(f"增量拉取 {code}: {inc_start} ~ {today_str}")
+                df_new = fetch_stock_data_unified(code, inc_start, today_str, source=source)
+
+                if df_new is not None and len(df_new) > 0:
+                    # 合并新旧数据
+                    old_cols = [c for c in cached.columns if c not in ("ema21", "ema55", "ema120")]
+                    cached_clean = cached[old_cols].copy()
+                    df_merged = pd.concat([cached_clean, df_new], ignore_index=True)
+                    df_merged = df_merged.drop_duplicates(subset=["date"], keep="last")
+                    df_merged = df_merged.sort_values("date").reset_index(drop=True)
+                    logger.info(f"增量合并 {code}: 原有{len(cached_clean)}天 + 新增{len(df_new)}天 = {len(df_merged)}天")
+                    return df_merged.tail(days)
+                else:
+                    # 无新数据（如周末/节假日），返回缓存
+                    return cached.tail(days)
+
+    # 首次拉取或强制刷新：完整历史数据
+    start_date = (datetime.now() - timedelta(days=days + 30)).strftime("%Y-%m-%d")
+    df = fetch_stock_data_unified(code, start_date, today_str, source=source)
     return df
 
 
@@ -200,11 +258,11 @@ def get_cached_date_range(code: str) -> tuple[str | None, str | None, int]:
     -------
     tuple[earliest_date, latest_date, count]
     """
-    with sqlite3.connect(DB_PATH) as conn:
-        row = conn.execute(
-            "SELECT MIN(date), MAX(date), COUNT(*) FROM daily_quotes WHERE code = ?",
-            (code,),
-        ).fetchone()
+    conn = _get_conn()
+    row = conn.execute(
+        "SELECT MIN(date), MAX(date), COUNT(*) FROM daily_quotes WHERE code = ?",
+        (code,),
+    ).fetchone()
     if row and row[0]:
         return row[0], row[1], row[2]
     return None, None, 0
@@ -218,12 +276,12 @@ def find_stocks_needing_backfill(min_days: int = MIN_CACHE_DAYS) -> list[dict]:
     -------
     list[dict]: [{code, name, count, earliest, latest}, ...]
     """
-    with sqlite3.connect(DB_PATH) as conn:
-        rows = conn.execute(
-            "SELECT code, name, COUNT(*) as cnt, MIN(date) as mind, MAX(date) as maxd "
-            "FROM daily_quotes GROUP BY code HAVING cnt < ? ORDER BY cnt",
-            (min_days,),
-        ).fetchall()
+    conn = _get_conn()
+    rows = conn.execute(
+        "SELECT code, name, COUNT(*) as cnt, MIN(date) as mind, MAX(date) as maxd "
+        "FROM daily_quotes GROUP BY code HAVING cnt < ? ORDER BY cnt",
+        (min_days,),
+    ).fetchall()
     return [
         {"code": r[0], "name": r[1], "count": r[2], "earliest": r[3], "latest": r[4]}
         for r in rows
@@ -276,11 +334,11 @@ def backfill_stock_history(
 
     # 获取名称
     if not name:
-        with sqlite3.connect(DB_PATH) as conn:
-            r = conn.execute(
-                "SELECT name FROM daily_quotes WHERE code = ? AND name != '' LIMIT 1",
-                (code,),
-            ).fetchone()
+        conn = _get_conn()
+        r = conn.execute(
+            "SELECT name FROM daily_quotes WHERE code = ? AND name != '' LIMIT 1",
+            (code,),
+        ).fetchone()
         name = r[0] if r else ""
 
     # 2. 计算需要补充的日期范围
@@ -402,11 +460,11 @@ def backfill_ema_cache() -> int:
     对数据库中有 OHLCV 但缺少 EMA 的存量数据批量计算并回填 EMA。
     返回更新的记录数。
     """
-    with sqlite3.connect(DB_PATH) as conn:
-        # 查找需要回填的股票代码
-        rows = conn.execute(
-            "SELECT DISTINCT code FROM daily_quotes WHERE ema21 IS NULL"
-        ).fetchall()
+    conn = _get_conn()
+    # 查找需要回填的股票代码
+    rows = conn.execute(
+        "SELECT DISTINCT code FROM daily_quotes WHERE ema21 IS NULL"
+    ).fetchall()
     codes = [r[0] for r in rows]
     if not codes:
         logger.info("EMA 缓存回填: 无需更新，所有数据均已缓存 EMA")
@@ -419,18 +477,22 @@ def backfill_ema_cache() -> int:
             if df.empty:
                 continue
             df = calc_indicators(df)  # 计算 EMA（此时 DataFrame 无 EMA 列）
-            with sqlite3.connect(DB_PATH) as conn:
-                for _, row in df.iterrows():
-                    conn.execute(
-                        "UPDATE daily_quotes SET ema21=?, ema55=?, ema120=? WHERE code=? AND date=?",
-                        (
-                            float(row["ema21"]) if pd.notna(row["ema21"]) else None,
-                            float(row["ema55"]) if pd.notna(row["ema55"]) else None,
-                            float(row["ema120"]) if pd.notna(row["ema120"]) else None,
-                            code,
-                            str(row["date"])[:10],
-                        ),
-                    )
+            # 批量 UPDATE — 使用 executemany 替代逐行 execute
+            update_rows = [
+                (
+                    float(row["ema21"]) if pd.notna(row["ema21"]) else None,
+                    float(row["ema55"]) if pd.notna(row["ema55"]) else None,
+                    float(row["ema120"]) if pd.notna(row["ema120"]) else None,
+                    code,
+                    str(row["date"])[:10],
+                )
+                for _, row in df.iterrows()
+            ]
+            conn.executemany(
+                "UPDATE daily_quotes SET ema21=?, ema55=?, ema120=? WHERE code=? AND date=?",
+                update_rows,
+            )
+            conn.commit()
             total_updated += len(df)
         except Exception as e:
             logger.error(f"EMA 回填异常 {code}: {e}")

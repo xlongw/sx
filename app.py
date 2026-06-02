@@ -22,6 +22,8 @@ from config import (
     MIN_DAYS_REQUIRED,
     KLINE_DISPLAY_DAYS,
     DATA_SOURCE,
+    get_default_stocks,
+    filter_stock_list,
 )
 from data_fetcher import bs_login, bs_logout
 from data_manager import (
@@ -33,6 +35,7 @@ from data_manager import (
     fetch_stock_data,
     save_to_db,
     backfill_ema_cache,
+    _get_conn,
 )
 from screen_engine import screen_single_stock
 from kline_plotter import plot_kline_with_emas
@@ -59,8 +62,9 @@ st.set_page_config(
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def get_stock_list() -> pd.DataFrame:
-    """返回内置默认股票列表。"""
-    return pd.DataFrame(DEFAULT_STOCKS, columns=["code", "name"])
+    """返回内置默认股票列表（已过滤非主板/退市股票）。"""
+    filtered = get_default_stocks()
+    return pd.DataFrame(filtered, columns=["code", "name"])
 
 
 def parse_custom_codes(text: str) -> list[tuple[str, str]]:
@@ -68,6 +72,144 @@ def parse_custom_codes(text: str) -> list[tuple[str, str]]:
     codes_raw = [c.strip() for c in text.split("\n") if c.strip()]
     codes_clean = [format_code(c) for c in codes_raw]
     return [(c, "") for c in codes_clean]
+
+
+# ── 数据质量仪表盘 ──────────────────────────────────────
+def get_db_stats() -> dict:
+    """查询数据库统计数据，用于数据质量仪表盘。"""
+    try:
+        conn = _get_conn()
+        total_stocks = conn.execute(
+            "SELECT COUNT(DISTINCT code) FROM daily_quotes"
+        ).fetchone()[0]
+        total_records = conn.execute(
+            "SELECT COUNT(*) FROM daily_quotes"
+        ).fetchone()[0]
+        latest_date = conn.execute(
+            "SELECT MAX(date) FROM daily_quotes"
+        ).fetchone()[0] or "N/A"
+
+        # 数据覆盖健康度：统计各股票数据天数分布
+        coverage = conn.execute("""
+            SELECT
+                COUNT(CASE WHEN cnt >= 300 THEN 1 END) as good,
+                COUNT(CASE WHEN cnt >= 120 AND cnt < 300 THEN 1 END) as fair,
+                COUNT(CASE WHEN cnt >= 60 AND cnt < 120 THEN 1 END) as low,
+                COUNT(CASE WHEN cnt < 60 THEN 1 END) as poor
+            FROM (SELECT code, COUNT(*) as cnt FROM daily_quotes GROUP BY code)
+        """).fetchone()
+
+        # EMA 缓存覆盖率
+        ema_total = conn.execute(
+            "SELECT COUNT(*) FROM daily_quotes"
+        ).fetchone()[0]
+        ema_cached = conn.execute(
+            "SELECT COUNT(*) FROM daily_quotes WHERE ema21 IS NOT NULL"
+        ).fetchone()[0]
+        ema_pct = round(ema_cached / ema_total * 100, 1) if ema_total > 0 else 0
+
+        return {
+            "total_stocks": total_stocks,
+            "total_records": total_records,
+            "latest_date": latest_date,
+            "coverage_good": coverage[0],
+            "coverage_fair": coverage[1],
+            "coverage_low": coverage[2],
+            "coverage_poor": coverage[3],
+            "ema_cached_pct": ema_pct,
+        }
+    except Exception as e:
+        logger.warning(f"获取数据库统计失败: {e}")
+        return {}
+
+
+def render_db_dashboard(stats: dict) -> None:
+    """渲染数据质量仪表盘。"""
+    if not stats:
+        return
+
+    st.divider()
+    st.subheader("📊 数据概览")
+
+    col1, col2, col3, col4, col5 = st.columns(5)
+    with col1:
+        st.metric("📋 股票总数", f"{stats['total_stocks']:,}")
+    with col2:
+        st.metric("📝 总记录数", f"{stats['total_records']:,}")
+    with col3:
+        st.metric("📅 最新数据", stats["latest_date"])
+    with col4:
+        st.metric("💾 EMA缓存率", f"{stats['ema_cached_pct']}%")
+    with col5:
+        stocks_total = stats["total_stocks"]
+        good_pct = round(stats["coverage_good"] / stocks_total * 100, 1) if stocks_total else 0
+        st.metric("✅ 数据充足率", f"{good_pct}%",
+                  help=f">=300天: {stats['coverage_good']}支")
+
+    # 覆盖度分布条
+    col_a, col_b, col_c, col_d = st.columns(4)
+    with col_a:
+        st.metric("🟢 充足 (≥300天)", stats["coverage_good"])
+    with col_b:
+        st.metric("🟡 一般 (120-299天)", stats["coverage_fair"])
+    with col_c:
+        st.metric("🟠 不足 (60-119天)", stats["coverage_low"])
+    with col_d:
+        st.metric("🔴 严重不足 (<60天)", stats["coverage_poor"])
+
+
+# ── 单股筛选辅助函数 ────────────────────────────────────
+def _screen_one_stock(
+    code: str,
+    name: str,
+    logic_mode: str,
+    threshold_b: float,
+    threshold_c: float,
+    threshold_a_dev: float,
+    threshold_d_vol: float,
+    enabled_a: bool,
+    enabled_b: bool,
+    enabled_c: bool,
+    enabled_d: bool,
+) -> dict:
+    """
+    加载并筛选单支股票。
+
+    Returns
+    -------
+    dict: {"signals": [...], "error": str|None, "skipped": bool, "code": str, "name": str}
+    """
+    result = {
+        "code": code,
+        "name": name,
+        "signals": [],
+        "error": None,
+        "skipped": False,
+    }
+    try:
+        df = load_from_db(code, limit=DEFAULT_DAYS)
+        if df is None or len(df) < MIN_DAYS_REQUIRED:
+            result["skipped"] = True
+            return result
+
+        signals = screen_single_stock(
+            df, code, name,
+            logic_mode=logic_mode,
+            threshold_b=threshold_b,
+            threshold_c=threshold_c,
+            threshold_a_dev=threshold_a_dev,
+            threshold_d_vol=threshold_d_vol,
+            enabled_a=enabled_a,
+            enabled_b=enabled_b,
+            enabled_c=enabled_c,
+            enabled_d=enabled_d,
+        )
+        result["signals"] = signals
+    except Exception as e:
+        result["error"] = str(e)
+        logger.error(f"筛选异常 {code} {name}: {e}")
+
+    return result
 
 
 # ── K线图独立绘制函数 ────────────────────────────────────
@@ -107,7 +249,15 @@ def main():
     st.caption("基于 EMA21 / EMA55 / EMA120 三条均线的技术形态筛选")
 
     init_db()
-    backfill_ema_cache()  # 对存量数据回填 EMA（新数据库自动跳过）
+
+    # EMA 缓存回填：仅在会话首次运行时执行，后续交互跳过
+    if "ema_backfill_done" not in st.session_state:
+        backfill_ema_cache()
+        st.session_state["ema_backfill_done"] = True
+
+    # ── 数据质量仪表盘 ───────────────────────────────────
+    db_stats = get_db_stats()
+    render_db_dashboard(db_stats)
 
     # ── 左侧边栏 ──────────────────────────────────────────
     with st.sidebar:
@@ -138,8 +288,18 @@ def main():
         enabled_a = st.checkbox(
             "条件A: 首次站上三线",
             value=True,
-            help="今日收盘价首次同时大于EMA21/55/120",
+            help="今日收盘价首次同时大于EMA21/55/120，且未过度远离均线",
         )
+        threshold_a_dev = st.slider(
+            "A-偏离度上限 (%)",
+            min_value=3,
+            max_value=100,
+            value=15,
+            step=1,
+            help="收盘价偏离EMA均值 < 此值（防止选出已大幅远离均线的股票）",
+            disabled=not enabled_a,
+        )
+
         enabled_b = st.checkbox(
             "条件B: 均线粘合",
             value=True,
@@ -168,6 +328,21 @@ def main():
             step=1,
             help="收盘价偏离均线 < 此百分比",
             disabled=not enabled_c,
+        )
+
+        enabled_d = st.checkbox(
+            "条件D: 放量确认",
+            value=False,
+            help="今日成交量 > 20日均量 × 倍数（有资金介入）",
+        )
+        threshold_d_vol = st.slider(
+            "放量倍数",
+            min_value=1.2,
+            max_value=3.0,
+            value=1.5,
+            step=0.1,
+            help="今日成交量 / 20日均量 > 此值",
+            disabled=not enabled_d,
         )
 
         st.divider()
@@ -275,6 +450,10 @@ def main():
         ("selected_kline_code", None),
         ("selected_kline_name", ""),
         ("show_kline_from_watch", False),
+        # 筛选统计
+        ("failed_count", 0),
+        ("skipped_count", 0),
+        ("failed_list", []),
     ]:
         if key not in st.session_state:
             st.session_state[key] = default
@@ -350,46 +529,62 @@ def main():
             ]
 
         if not stock_list:
-            stock_list = list(DEFAULT_STOCKS)
+            stock_list = get_default_stocks()
+
+        # 非自定义模式：自动过滤非主板/退市股票
+        if not (use_custom and custom_codes) and not filter_watchlist_only:
+            stock_list = filter_stock_list(stock_list)
 
         total = len(stock_list)
         progress_bar = st.progress(0, text="正在加载数据并计算...")
+        status_text = st.empty()
+
         all_signals = []
         screened = 0
+        failed = 0
+        skipped = 0
+        failed_list = []  # 记录失败的股票
+
+        # 串行筛选（每支 ~5ms，无需并行开销）
+        t_a_dev = threshold_a_dev / 100.0
+        t_c = threshold_c / 100.0
 
         for i, (code, name) in enumerate(stock_list):
             try:
-                df = load_from_db(code, limit=DEFAULT_DAYS)
-                if df is None or len(df) < MIN_DAYS_REQUIRED:
-                    # 数据不足时跳过，不触发网络拉取（网络拉取统一在「刷新数据」时完成）
-                    logger.info(f"筛选跳过: {code} {name} 数据不足 ({len(df) if df is not None else 0}天)")
-                    screened += 1
-                    continue
-
-                if df is not None and len(df) >= MIN_DAYS_REQUIRED:
-                    signals = screen_single_stock(
-                        df,
-                        code,
-                        name,
-                        logic_mode,
-                        threshold_b,
-                        threshold_c / 100.0,
-                        enabled_a,
-                        enabled_b,
-                        enabled_c,
-                    )
-                    all_signals.extend(signals)
+                result = _screen_one_stock(
+                    code, name,
+                    logic_mode=logic_mode,
+                    threshold_b=threshold_b,
+                    threshold_c=t_c,
+                    threshold_a_dev=t_a_dev,
+                    threshold_d_vol=threshold_d_vol,
+                    enabled_a=enabled_a,
+                    enabled_b=enabled_b,
+                    enabled_c=enabled_c,
+                    enabled_d=enabled_d,
+                )
+                if result["error"]:
+                    failed += 1
+                    failed_list.append((code, name, result["error"]))
+                elif result["skipped"]:
+                    skipped += 1
+                elif result["signals"]:
+                    all_signals.extend(result["signals"])
                 screened += 1
             except Exception as e:
+                failed += 1
+                failed_list.append((code, name, str(e)))
                 logger.error(f"筛选异常 {code}: {e}")
 
-            if (i + 1) % 10 == 0 or i == total - 1:
-                progress = int((i + 1) / total * 100)
-                progress_bar.progress(
-                    progress, text=f"已筛选 {i+1}/{total}: {code}"
+            if (i + 1) % 50 == 0 or i == total - 1:
+                pct = int((i + 1) / total * 100)
+                progress_bar.progress(pct, text=f"已筛选 {i+1}/{total}")
+                status_text.caption(
+                    f"信号: {len(all_signals)} | 跳过: {skipped} | 失败: {failed}"
                 )
 
         progress_bar.empty()
+        status_text.empty()
         elapsed = time.time() - start_time
 
         if all_signals:
@@ -402,16 +597,40 @@ def main():
         st.session_state["elapsed"] = elapsed
         st.session_state["screened_count"] = screened
         st.session_state["screening"] = False
+        st.session_state["failed_count"] = failed
+        st.session_state["skipped_count"] = skipped
+        st.session_state["failed_list"] = failed_list
 
     # ── 显示结果 ──
     results = st.session_state.get("results")
     if results is not None:
         elapsed = st.session_state.get("elapsed", 0)
         screened = st.session_state.get("screened_count", 0)
+        failed = st.session_state.get("failed_count", 0)
+        skipped = st.session_state.get("skipped_count", 0)
+        failed_list = st.session_state.get("failed_list", [])
 
         st.divider()
         st.subheader(f"筛选结果: 共 {len(results)} 支股票触发信号")
-        st.caption(f"已筛选 {screened} 支股票 · 耗时 {elapsed:.1f} 秒")
+
+        # 筛选统计摘要
+        col_s1, col_s2, col_s3, col_s4 = st.columns(4)
+        with col_s1:
+            st.metric("📊 已筛选", f"{screened}")
+        with col_s2:
+            st.metric("🔔 触发信号", f"{len(results)}")
+        with col_s3:
+            st.metric("⏭️ 跳过(数据不足)", f"{skipped}")
+        with col_s4:
+            st.metric("❌ 失败", f"{failed}", delta=None if failed == 0 else f"⚠️")
+
+        st.caption(f"耗时 {elapsed:.1f} 秒")
+
+        # 失败详情（可展开）
+        if failed > 0 and failed_list:
+            with st.expander(f"⚠️ 失败详情 ({failed} 支股票)", expanded=False):
+                for code, name, err in failed_list:
+                    st.text(f"• {code} {name}: {err[:120]}")
 
         if not results.empty:
             # ── 加入自选股 ──
@@ -436,20 +655,28 @@ def main():
                 "deviation_pct": "偏离度(%)",
                 "signal": "触发条件",
             }
+            # 如有放量数据，追加显示
+            has_vol = "vol_ratio" in results.columns and results["vol_ratio"].sum() > 0
+            if has_vol:
+                display_cols["vol_ratio"] = "量比"
             df_display = results[list(display_cols.keys())].rename(columns=display_cols)
+
+            col_config = {
+                "股票代码": st.column_config.TextColumn(width="small"),
+                "当前价": st.column_config.NumberColumn(format="%.2f"),
+                "EMA21": st.column_config.NumberColumn(format="%.2f"),
+                "EMA55": st.column_config.NumberColumn(format="%.2f"),
+                "EMA120": st.column_config.NumberColumn(format="%.2f"),
+                "偏离度(%)": st.column_config.NumberColumn(format="%.2f"),
+            }
+            if has_vol:
+                col_config["量比"] = st.column_config.NumberColumn(format="%.1f")
 
             st.dataframe(
                 df_display,
                 use_container_width=True,
                 hide_index=True,
-                column_config={
-                    "股票代码": st.column_config.TextColumn(width="small"),
-                    "当前价": st.column_config.NumberColumn(format="%.2f"),
-                    "EMA21": st.column_config.NumberColumn(format="%.2f"),
-                    "EMA55": st.column_config.NumberColumn(format="%.2f"),
-                    "EMA120": st.column_config.NumberColumn(format="%.2f"),
-                    "偏离度(%)": st.column_config.NumberColumn(format="%.2f"),
-                },
+                column_config=col_config,
             )
 
             # ── K 线图查看 ──

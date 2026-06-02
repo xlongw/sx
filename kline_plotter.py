@@ -120,6 +120,7 @@ def plot_kline_with_emas(
         "A": ("triangle-up", "limegreen", 14, "⬆ 首次站上三线"),
         "B": ("circle", "gold", 12, "🟡 均线粘合"),
         "C": ("square", "dodgerblue", 12, "🟦 低波动"),
+        "D": ("diamond", "red", 12, "🔴 放量确认"),
     }
     for stype in signal_types:
         key = stype[0]  # 取首字母: A, B, C

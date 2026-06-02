@@ -4,8 +4,6 @@ Logging, progress bar, and exception handling utilities.
 """
 
 import logging
-import os
-from datetime import datetime
 
 from config import LOG_PATH
 
@@ -40,9 +38,6 @@ def log_skip(logger: logging.Logger, code: str, name: str, reason: str) -> None:
     """记录跳过的股票及原因到日志文件。"""
     msg = f"跳过 {code} {name}: {reason}"
     logger.warning(msg)
-    # 同时追加到 log.txt 方便直接查看
-    with open(LOG_PATH, "a", encoding="utf-8") as f:
-        f.write(f"{datetime.now()} - {msg}\n")
 
 
 def log_error(logger: logging.Logger, code: str, name: str, error: Exception) -> None:

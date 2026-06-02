@@ -6,7 +6,13 @@ Screening engine with AND/OR logic combination.
 import pandas as pd
 
 from config import MIN_DAYS_REQUIRED
-from indicator import calc_indicators, check_condition_a, check_condition_b, check_condition_c
+from indicator import (
+    calc_indicators,
+    check_condition_a,
+    check_condition_b,
+    check_condition_c,
+    check_condition_d,
+)
 from utils import setup_logger
 
 logger = setup_logger(__name__)
@@ -19,9 +25,12 @@ def screen_single_stock(
     logic_mode: str = "OR",
     threshold_b: float = 1.02,
     threshold_c: float = 0.02,
+    threshold_a_dev: float = 0.15,
+    threshold_d_vol: float = 1.5,
     enabled_a: bool = True,
     enabled_b: bool = True,
     enabled_c: bool = False,
+    enabled_d: bool = False,
 ) -> list[dict]:
     """
     对单支股票执行筛选。
@@ -40,7 +49,11 @@ def screen_single_stock(
         条件 B 粘合阈值。
     threshold_c : float
         条件 C 偏离阈值。
-    enabled_a/b/c : bool
+    threshold_a_dev : float
+        条件 A 偏离度上限（默认 15%）。
+    threshold_d_vol : float
+        条件 D 成交量倍数（默认 1.5 倍均量）。
+    enabled_a/b/c/d : bool
         是否启用对应条件。
 
     Returns
@@ -55,9 +68,10 @@ def screen_single_stock(
     df = calc_indicators(df)
     latest = df.iloc[-1]
 
-    cond_a = check_condition_a(df).iloc[-1] if enabled_a else False
+    cond_a = check_condition_a(df, max_deviation=threshold_a_dev).iloc[-1] if enabled_a else False
     cond_b = check_condition_b(df, threshold_b).iloc[-1] if enabled_b else False
     cond_c = check_condition_c(df, threshold_c).iloc[-1] if enabled_c else False
+    cond_d = check_condition_d(df, vol_multiplier=threshold_d_vol).iloc[-1] if enabled_d else False
 
     # 组合逻辑
     if logic_mode == "AND":
@@ -68,9 +82,11 @@ def screen_single_stock(
             active.append(cond_b)
         if enabled_c:
             active.append(cond_c)
+        if enabled_d:
+            active.append(cond_d)
         triggered = all(active) if active else False
     else:  # OR
-        triggered = cond_a or cond_b or cond_c
+        triggered = cond_a or cond_b or cond_c or cond_d
 
     if not triggered:
         return []
@@ -86,6 +102,12 @@ def screen_single_stock(
         signal_types.append("B-均线粘合")
     if enabled_c and cond_c:
         signal_types.append("C-低波动")
+    if enabled_d and cond_d:
+        signal_types.append("D-放量确认")
+
+    # 成交量比率（辅助信息）
+    vol_ma20 = float(df["volume"].rolling(20).mean().iloc[-1]) if "volume" in df.columns else 0
+    vol_ratio = round(float(latest["volume"]) / vol_ma20, 2) if vol_ma20 > 0 else 0
 
     return [
         {
@@ -101,5 +123,7 @@ def screen_single_stock(
             "cond_a": cond_a,
             "cond_b": cond_b,
             "cond_c": cond_c,
+            "cond_d": cond_d,
+            "vol_ratio": vol_ratio,
         }
     ]
