@@ -7,7 +7,13 @@
 #
 # 无参数时打开 CHANGELOG.md 供手动编辑。
 
-CHANGELOG="D:/mode/sx/CHANGELOG.md"
+# 基于脚本自身位置定位 CHANGELOG.md，跨电脑/跨路径均可用
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+CHANGELOG="$SCRIPT_DIR/CHANGELOG.md"
+
+# 启动时清理 .pyc 缓存，防止旧版本代码被加载
+find "$SCRIPT_DIR" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
+find "$SCRIPT_DIR" -type f -name "*.pyc" -delete 2>/dev/null
 
 case "${1:-}" in
     "新增"|"修复"|"变更"|"移除"|"安全")

@@ -501,6 +501,166 @@ def backfill_ema_cache() -> int:
     return total_updated
 
 
+# ── 数据库清理：移除非主板和退市股票 ────────────────────
+def cleanup_invalid_stocks(
+    dry_run: bool = False,
+) -> dict:
+    """
+    清理数据库中非主板股票和已知退市/ST股票的记录。
+
+    非主板判断：config.is_mainboard() 返回 False。
+    已知问题股票：config.KNOWN_BAD_CODES。
+
+    Parameters
+    ----------
+    dry_run : bool
+        True 时仅扫描统计，不执行删除。
+
+    Returns
+    -------
+    dict: {non_mainboard_codes, non_mainboard_records, bad_codes, bad_records, deleted_total}
+    """
+    from config import is_mainboard, KNOWN_BAD_CODES
+
+    conn = _get_conn()
+    all_codes = conn.execute("SELECT DISTINCT code FROM daily_quotes").fetchall()
+    all_codes = [r[0] for r in all_codes]
+
+    # 找出非主板股票
+    non_mainboard = [c for c in all_codes if not is_mainboard(c)]
+    # 找出已知问题股票
+    known_bad = [c for c in all_codes if c in KNOWN_BAD_CODES]
+
+    # 合并去重
+    to_delete = list(set(non_mainboard + known_bad))
+
+    # 统计
+    non_main_records = 0
+    bad_records = 0
+    if non_mainboard:
+        placeholders = ",".join(["?"] * len(non_mainboard))
+        non_main_records = conn.execute(
+            f"SELECT COUNT(*) FROM daily_quotes WHERE code IN ({placeholders})",
+            non_mainboard,
+        ).fetchone()[0]
+    if known_bad:
+        placeholders = ",".join(["?"] * len(known_bad))
+        bad_records = conn.execute(
+            f"SELECT COUNT(*) FROM daily_quotes WHERE code IN ({placeholders})",
+            known_bad,
+        ).fetchone()[0]
+
+    result = {
+        "non_mainboard_codes": len(non_mainboard),
+        "non_mainboard_records": non_main_records,
+        "bad_codes": len(known_bad),
+        "bad_records": bad_records,
+        "deleted_total": 0,
+    }
+
+    if dry_run:
+        logger.info(
+            f"数据库扫描: 非主板 {len(non_mainboard)} 支 ({non_main_records} 条) | "
+            f"问题股票 {len(known_bad)} 支 ({bad_records} 条) | 待清理共 {len(to_delete)} 支"
+        )
+        return result
+
+    # 执行删除
+    if not to_delete:
+        logger.info("数据库清理: 无需清理")
+        return result
+
+    for batch_start in range(0, len(to_delete), 50):
+        batch = to_delete[batch_start:batch_start + 50]
+        placeholders = ",".join(["?"] * len(batch))
+        conn.execute(
+            f"DELETE FROM daily_quotes WHERE code IN ({placeholders})",
+            batch,
+        )
+
+    conn.commit()
+
+    # 统计实际删除数
+    deleted = non_main_records + bad_records
+    result["deleted_total"] = deleted
+
+    logger.info(
+        f"数据库清理完成: 移除 {len(to_delete)} 支股票 / {deleted} 条记录 | "
+        f"非主板 {len(non_mainboard)} 支 + 问题股票 {len(known_bad)} 支"
+    )
+    return result
+
+
+def get_mainboard_db_stats() -> dict:
+    """
+    获取仅限主板股票的数据库统计（用于仪表盘对比展示）。
+
+    Returns
+    -------
+    dict: {total_stocks, total_records, latest_date, coverage_*, ema_cached_pct}
+    """
+    from config import is_mainboard, KNOWN_BAD_CODES
+
+    conn = _get_conn()
+    all_codes = conn.execute("SELECT DISTINCT code FROM daily_quotes").fetchall()
+    all_codes = [r[0] for r in all_codes]
+
+    # 仅保留主板且不在黑名单中的股票
+    valid_codes = [
+        c for c in all_codes if is_mainboard(c) and c not in KNOWN_BAD_CODES
+    ]
+
+    if not valid_codes:
+        return {}
+
+    placeholders = ",".join(["?"] * len(valid_codes))
+    total_stocks = len(valid_codes)
+    total_records = conn.execute(
+        f"SELECT COUNT(*) FROM daily_quotes WHERE code IN ({placeholders})",
+        valid_codes,
+    ).fetchone()[0]
+    latest_date = conn.execute(
+        f"SELECT MAX(date) FROM daily_quotes WHERE code IN ({placeholders})",
+        valid_codes,
+    ).fetchone()[0] or "N/A"
+
+    # 覆盖度分布
+    coverage = conn.execute(f"""
+        SELECT
+            COUNT(CASE WHEN cnt >= 300 THEN 1 END),
+            COUNT(CASE WHEN cnt >= 120 AND cnt < 300 THEN 1 END),
+            COUNT(CASE WHEN cnt >= 60 AND cnt < 120 THEN 1 END),
+            COUNT(CASE WHEN cnt < 60 THEN 1 END)
+        FROM (
+            SELECT code, COUNT(*) as cnt FROM daily_quotes
+            WHERE code IN ({placeholders})
+            GROUP BY code
+        )
+    """, valid_codes).fetchone()
+
+    # EMA 缓存率
+    ema_total = conn.execute(
+        f"SELECT COUNT(*) FROM daily_quotes WHERE code IN ({placeholders})",
+        valid_codes,
+    ).fetchone()[0]
+    ema_cached = conn.execute(
+        f"SELECT COUNT(*) FROM daily_quotes WHERE code IN ({placeholders}) AND ema21 IS NOT NULL",
+        valid_codes,
+    ).fetchone()[0]
+    ema_pct = round(ema_cached / ema_total * 100, 1) if ema_total > 0 else 0
+
+    return {
+        "total_stocks": total_stocks,
+        "total_records": total_records,
+        "latest_date": latest_date,
+        "coverage_good": coverage[0],
+        "coverage_fair": coverage[1],
+        "coverage_low": coverage[2],
+        "coverage_poor": coverage[3],
+        "ema_cached_pct": ema_pct,
+    }
+
+
 # ── 并行拉取数据 ─────────────────────────────────────────
 def fetch_and_cache_stocks_parallel(
     stock_list: list[tuple[str, str]],

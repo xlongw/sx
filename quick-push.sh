@@ -10,7 +10,7 @@
 
 set -e
 
-REPO_DIR="D:/mode/sx"
+REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 BRANCH="main"
 REMOTE="origin"
 

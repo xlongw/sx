@@ -9,7 +9,27 @@ import streamlit as st
 import pandas as pd
 import time
 import os
+import glob as _glob
 from datetime import datetime
+
+# ── 启动时清理 .pyc 缓存，防止旧版本代码被加载 ─────────
+def _clean_pycache() -> None:
+    """清理项目目录下所有 __pycache__ 和 .pyc 文件。"""
+    _root = os.path.dirname(os.path.abspath(__file__))
+    _count = 0
+    for _d in _glob.glob(os.path.join(_root, "**", "__pycache__"), recursive=True):
+        try:
+            for _f in os.listdir(_d):
+                os.unlink(os.path.join(_d, _f))
+                _count += 1
+            os.rmdir(_d)
+        except OSError:
+            pass
+    if _count:
+        import logging
+        logging.getLogger(__name__).info(f"启动时清理了 {_count} 个 .pyc 缓存文件")
+
+_clean_pycache()
 
 # ── 本地模块导入 ─────────────────────────────────────────
 from config import (
@@ -20,6 +40,7 @@ from config import (
     DEFAULT_MAX_STOCKS,
     DEFAULT_DAYS,
     MIN_DAYS_REQUIRED,
+    MIN_CACHE_DAYS,
     KLINE_DISPLAY_DAYS,
     DATA_SOURCE,
     get_default_stocks,
@@ -35,6 +56,10 @@ from data_manager import (
     fetch_stock_data,
     save_to_db,
     backfill_ema_cache,
+    backfill_all_stocks,
+    find_stocks_needing_backfill,
+    cleanup_invalid_stocks,
+    get_mainboard_db_stats,
     _get_conn,
 )
 from screen_engine import screen_single_stock
@@ -76,7 +101,7 @@ def parse_custom_codes(text: str) -> list[tuple[str, str]]:
 
 # ── 数据质量仪表盘 ──────────────────────────────────────
 def get_db_stats() -> dict:
-    """查询数据库统计数据，用于数据质量仪表盘。"""
+    """查询数据库统计数据，同时返回全库和仅主板的统计。"""
     try:
         conn = _get_conn()
         total_stocks = conn.execute(
@@ -108,6 +133,9 @@ def get_db_stats() -> dict:
         ).fetchone()[0]
         ema_pct = round(ema_cached / ema_total * 100, 1) if ema_total > 0 else 0
 
+        # 仅主板股票统计
+        mb_stats = get_mainboard_db_stats()
+
         return {
             "total_stocks": total_stocks,
             "total_records": total_records,
@@ -117,6 +145,7 @@ def get_db_stats() -> dict:
             "coverage_low": coverage[2],
             "coverage_poor": coverage[3],
             "ema_cached_pct": ema_pct,
+            "mainboard": mb_stats,  # 仅主板统计
         }
     except Exception as e:
         logger.warning(f"获取数据库统计失败: {e}")
@@ -124,38 +153,63 @@ def get_db_stats() -> dict:
 
 
 def render_db_dashboard(stats: dict) -> None:
-    """渲染数据质量仪表盘。"""
+    """渲染数据质量仪表盘（全部缓存 vs 有效主板对比）。"""
     if not stats:
         return
+
+    mb = stats.get("mainboard", {})
 
     st.divider()
     st.subheader("📊 数据概览")
 
+    # ── 第一行：核心指标（全部缓存 / 有效主板 对比） ──
     col1, col2, col3, col4, col5 = st.columns(5)
     with col1:
-        st.metric("📋 股票总数", f"{stats['total_stocks']:,}")
+        st.metric("📋 股票总数",
+                  f"{stats['total_stocks']:,}",
+                  delta=f"有效主板 {mb.get('total_stocks', '—')}" if mb else None)
     with col2:
-        st.metric("📝 总记录数", f"{stats['total_records']:,}")
+        st.metric("📝 总记录数",
+                  f"{stats['total_records']:,}",
+                  delta=f"主板 {mb.get('total_records', '—'):,}" if mb else None)
     with col3:
         st.metric("📅 最新数据", stats["latest_date"])
     with col4:
         st.metric("💾 EMA缓存率", f"{stats['ema_cached_pct']}%")
     with col5:
-        stocks_total = stats["total_stocks"]
-        good_pct = round(stats["coverage_good"] / stocks_total * 100, 1) if stocks_total else 0
-        st.metric("✅ 数据充足率", f"{good_pct}%",
-                  help=f">=300天: {stats['coverage_good']}支")
+        all_total = stats["total_stocks"]
+        all_good_pct = round(stats["coverage_good"] / all_total * 100, 1) if all_total else 0
+        mb_total = mb.get("total_stocks", 0)
+        mb_good_pct = round(mb.get("coverage_good", 0) / mb_total * 100, 1) if mb_total else 0
+        st.metric("✅ 数据充足率(≥300天)",
+                  f"{all_good_pct}%",
+                  delta=f"主板 {mb_good_pct}%" if mb else None,
+                  delta_color="off")
 
-    # 覆盖度分布条
+    # ── 第二行：覆盖度分布（全部缓存） ──
+    st.caption("**全部缓存** 覆盖度分布")
     col_a, col_b, col_c, col_d = st.columns(4)
     with col_a:
-        st.metric("🟢 充足 (≥300天)", stats["coverage_good"])
+        st.metric("🟢 ≥300天", stats["coverage_good"])
     with col_b:
-        st.metric("🟡 一般 (120-299天)", stats["coverage_fair"])
+        st.metric("🟡 120-299天", stats["coverage_fair"])
     with col_c:
-        st.metric("🟠 不足 (60-119天)", stats["coverage_low"])
+        st.metric("🟠 60-119天", stats["coverage_low"])
     with col_d:
-        st.metric("🔴 严重不足 (<60天)", stats["coverage_poor"])
+        st.metric("🔴 <60天", stats["coverage_poor"])
+
+    # ── 第三行：覆盖度分布（仅有效主板） ──
+    if mb:
+        st.caption("**有效主板** 覆盖度分布")
+        col_m1, col_m2, col_m3, col_m4 = st.columns(4)
+        with col_m1:
+            st.metric("🟢 ≥300天", mb.get("coverage_good", 0))
+        with col_m2:
+            st.metric("🟡 120-299天", mb.get("coverage_fair", 0))
+        with col_m3:
+            st.metric("🟠 60-119天", mb.get("coverage_low", 0))
+        with col_m4:
+            st.metric("🔴 <60天", mb.get("coverage_poor", 0))
 
 
 # ── 单股筛选辅助函数 ────────────────────────────────────
@@ -383,6 +437,25 @@ def main():
 
         st.divider()
 
+        # ── 数据库维护 ──
+        st.header("🛠️ 数据库维护")
+
+        col_m1, col_m2 = st.columns(2)
+        with col_m1:
+            backfill_btn = st.button(
+                "📦 补充历史数据",
+                use_container_width=True,
+                help=f"扫描数据不足{MIN_CACHE_DAYS}天的股票，自动补充更早期的历史数据",
+            )
+        with col_m2:
+            cleanup_btn = st.button(
+                "🧹 清理无效数据",
+                use_container_width=True,
+                help="移除非主板股票（创业板/科创板/北交所）和已退市/ST股票的数据",
+            )
+
+        st.divider()
+
         # ── 自选股管理 ──
         st.header("📌 自选股管理")
 
@@ -491,6 +564,74 @@ def main():
             st.success(f"数据刷新完成！成功获取 {fetched}/{total} 支股票数据")
 
         st.session_state["screening"] = False
+
+    # ── 补充历史数据 ──
+    if backfill_btn:
+        with st.spinner("正在扫描数据不足的股票..."):
+            needing = find_stocks_needing_backfill(min_days=MIN_CACHE_DAYS)
+            stock_list = [(s["code"], s["name"]) for s in needing]
+
+        if not stock_list:
+            st.success(f"所有股票数据充足 (>= {MIN_CACHE_DAYS} 天)")
+        else:
+            st.info(f"发现 {len(stock_list)} 支股票数据不足 {MIN_CACHE_DAYS} 天，开始补充...")
+            progress_bar = st.progress(0, text="准备中...")
+
+            def _backfill_progress(done: int, total_count: int, code: str, msg: str):
+                pct = int(done / total_count * 100)
+                progress_bar.progress(pct, text=f"已处理 {done}/{total_count}: {code} — {msg}")
+
+            result = backfill_all_stocks(
+                stock_list,
+                target_days=MIN_CACHE_DAYS,
+                source=data_source,
+                progress_callback=_backfill_progress,
+            )
+            progress_bar.empty()
+            st.success(
+                f"历史数据补充完成！"
+                f"已补充 {result['backfilled']} 支 (+{result['days_added']}天) | "
+                f"已充足 {result['skipped_ok']} 支 | "
+                f"无更多数据 {result.get('skipped_no_data', 0)} 支"
+            )
+
+    # ── 清理无效数据 ──
+    if cleanup_btn:
+        # 先扫描预览
+        with st.spinner("正在扫描无效数据..."):
+            preview = cleanup_invalid_stocks(dry_run=True)
+
+        st.warning(
+            f"⚠️ 确认清理？将删除以下数据：\n\n"
+            f"• 非主板股票（创业板/科创板/北交所）: **{preview['non_mainboard_codes']} 支** "
+            f"({preview['non_mainboard_records']:,} 条记录)\n"
+            f"• 已退市/ST 问题股票: **{preview['bad_codes']} 支** "
+            f"({preview['bad_records']:,} 条记录)\n\n"
+            f"总计将删除 **{(preview['non_mainboard_codes'] + preview['bad_codes'])} 支** 股票的数据。"
+        )
+
+        col_confirm, col_cancel = st.columns(2)
+        with col_confirm:
+            confirm_cleanup = st.button(
+                "✅ 确认清理",
+                use_container_width=True,
+                help="确认删除上述无效数据（不可撤销）",
+            )
+        with col_cancel:
+            cancel_cleanup = st.button("❌ 取消", use_container_width=True)
+
+        if confirm_cleanup:
+            with st.spinner("正在清理..."):
+                result = cleanup_invalid_stocks(dry_run=False)
+            st.success(
+                f"✅ 清理完成！已删除 {result['deleted_total']:,} 条记录。"
+                f"请重启应用以刷新仪表盘。"
+            )
+            logger.info(
+                f"用户手动清理数据库: 删除 {result['deleted_total']} 条记录"
+            )
+        elif cancel_cleanup:
+            st.info("已取消清理操作。")
 
     # ── 开始筛选 ──
     if start_btn:

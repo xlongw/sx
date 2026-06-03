@@ -4,12 +4,17 @@ Logging, progress bar, and exception handling utilities.
 """
 
 import logging
+from logging.handlers import RotatingFileHandler
 
 from config import LOG_PATH
 
+# 日志轮转配置
+LOG_MAX_BYTES = 5 * 1024 * 1024   # 5MB 单文件上限
+LOG_BACKUP_COUNT = 3               # 保留最近 3 个备份
+
 
 def setup_logger(name: str = __name__) -> logging.Logger:
-    """配置并返回 logger 实例，同时输出到文件和 stderr。"""
+    """配置并返回 logger 实例，同时输出到文件（自动轮转）和 stderr。"""
     logger = logging.getLogger(name)
 
     # 避免重复添加 handler
@@ -18,8 +23,13 @@ def setup_logger(name: str = __name__) -> logging.Logger:
 
     logger.setLevel(logging.INFO)
 
-    # 文件 handler
-    fh = logging.FileHandler(LOG_PATH, encoding="utf-8")
+    # 文件 handler — 自动轮转: 单文件 5MB, 保留 3 个备份
+    fh = RotatingFileHandler(
+        LOG_PATH,
+        maxBytes=LOG_MAX_BYTES,
+        backupCount=LOG_BACKUP_COUNT,
+        encoding="utf-8",
+    )
     fh.setLevel(logging.INFO)
     fh.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 
