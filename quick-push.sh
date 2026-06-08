@@ -8,7 +8,7 @@
 #   bash quick-push.sh "修复K线图日期格式bug"
 #   bash quick-push.sh "添加周线筛选功能" --log "新增"
 
-set -e
+set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 BRANCH="main"
@@ -62,7 +62,11 @@ git commit -m "$COMMIT_MSG"
 
 # ── 4. 推送 ──
 echo "  🚀 推送至 $REMOTE/$BRANCH ..."
-git push "$REMOTE" "$BRANCH"
+if git push "$REMOTE" "$BRANCH"; then
+    echo "  ✅ 推送成功"
+else
+    echo "  ⚠️  推送失败（网络问题？可稍后手动 git push）"
+fi
 
 # ── 5. 可选：追加更新日志 ──
 if [ -n "$LOG_TYPE" ]; then
@@ -70,8 +74,11 @@ if [ -n "$LOG_TYPE" ]; then
         bash changelog.sh "$LOG_TYPE" "$COMMIT_MSG"
         git add CHANGELOG.md
         git commit -m "📝 更新 CHANGELOG: $COMMIT_MSG" 2>/dev/null || true
-        git push "$REMOTE" "$BRANCH"
-        echo "  📝 已同步更新 CHANGELOG.md"
+        if git push "$REMOTE" "$BRANCH"; then
+            echo "  📝 已同步更新 CHANGELOG.md"
+        else
+            echo "  ⚠️  CHANGELOG 推送失败（可稍后手动 git push）"
+        fi
     fi
 fi
 

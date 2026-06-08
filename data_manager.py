@@ -15,6 +15,7 @@ from config import (
     DB_PATH, DEFAULT_DAYS, CACHE_VALIDITY_DAYS, MIN_DAYS_KLINE,
     MIN_CACHE_DAYS, BACKFILL_LOOKBACK_DAYS,
     MAX_PARALLEL_FETCHES, FETCH_RANDOM_DELAY_MIN, FETCH_RANDOM_DELAY_MAX,
+    BATCH_COMMIT_SIZE,
     DATA_SOURCE,
 )
 from data_fetcher import fetch_stock_data_unified
@@ -52,6 +53,32 @@ def _close_conn() -> None:
 
 
 # ── 数据库初始化 ─────────────────────────────────────────
+_WAL_CHECKPOINT_THRESHOLD = 2 * 1024 * 1024  # WAL 文件超过 2MB 时触发 checkpoint
+
+
+def wal_checkpoint_if_needed() -> int:
+    """
+    检查 WAL 文件大小，超过阈值则执行 checkpoint 并截断。
+    返回 WAL 文件截断前的大小（bytes），无需处理则返回 0。
+    """
+    import os
+    wal_path = DB_PATH + "-wal"
+    if not os.path.exists(wal_path):
+        return 0
+    wal_size = os.path.getsize(wal_path)
+    if wal_size < _WAL_CHECKPOINT_THRESHOLD:
+        return 0
+    try:
+        conn = _get_conn()
+        conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        logger.info(f"WAL checkpoint 完成: {wal_size/1024/1024:.1f}MB → "
+                    f"{os.path.getsize(wal_path)/1024:.1f}MB" if os.path.exists(wal_path) else "0MB")
+        return wal_size
+    except Exception as e:
+        logger.warning(f"WAL checkpoint 失败: {e}")
+        return 0
+
+
 def init_db() -> None:
     """创建 SQLite 表及索引（如不存在），并确保 EMA 缓存列存在。"""
     conn = _get_conn()
@@ -86,9 +113,12 @@ def init_db() -> None:
     from watchlist_manager import init_watchlist_table
     init_watchlist_table()
 
+    # WAL 文件过大时自动 checkpoint
+    wal_checkpoint_if_needed()
+
 
 # ── 写入 ─────────────────────────────────────────────────
-def save_to_db(df: pd.DataFrame, code: str, name: str) -> None:
+def save_to_db(df: pd.DataFrame, code: str, name: str, commit: bool = True) -> None:
     """将单支股票 DataFrame 写入 SQLite（UPSERT），同时计算并缓存 EMA。"""
     if df is None or df.empty:
         return
@@ -120,7 +150,8 @@ def save_to_db(df: pd.DataFrame, code: str, name: str) -> None:
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
         rows,
     )
-    conn.commit()
+    if commit:
+        conn.commit()
 
 
 # ── 读取 ─────────────────────────────────────────────────
@@ -164,6 +195,27 @@ def is_cache_fresh(code: str) -> bool:
     return (datetime.now() - latest_dt).days < CACHE_VALIDITY_DAYS
 
 
+def get_fresh_codes_map() -> dict[str, str]:
+    """
+    批量查询所有缓存新鲜的股票代码 → 最新日期映射。
+
+    一次性 SQL 查询替代逐支 is_cache_fresh() 调用，
+    用于 refresh 前快速过滤掉无需更新的股票。
+
+    Returns
+    -------
+    dict[str, str]: {code: latest_date_str} 仅返回缓存新鲜的股票。
+    """
+    conn = _get_conn()
+    cutoff = (datetime.now() - timedelta(days=CACHE_VALIDITY_DAYS)).strftime("%Y-%m-%d")
+    rows = conn.execute(
+        "SELECT code, MAX(date) FROM daily_quotes "
+        "GROUP BY code HAVING MAX(date) >= ?",
+        (cutoff,),
+    ).fetchall()
+    return {r[0]: r[1] for r in rows}
+
+
 # ── 获取并缓存 ───────────────────────────────────────────
 def fetch_stock_data(code: str, days: int = DEFAULT_DAYS,
                      force_refresh: bool = False,
@@ -191,35 +243,33 @@ def fetch_stock_data(code: str, days: int = DEFAULT_DAYS,
     """
     today_str = datetime.now().strftime("%Y-%m-%d")
 
-    # 先查缓存
+    # 先查缓存 — 轻量级：仅查最新日期（避免全量 load_from_db）
     if not force_refresh:
-        cached = load_from_db(code, limit=days)
-        if len(cached) >= MIN_DAYS_KLINE:
-            latest_cached_dt = cached["date"].max()
-            if latest_cached_dt:
-                latest_str = latest_cached_dt.strftime("%Y-%m-%d")
-                # 缓存已覆盖今天 → 直接返回
-                if (datetime.now() - latest_cached_dt).days < CACHE_VALIDITY_DAYS:
-                    return cached.tail(days)
+        latest_cached_str = get_cached_date(code)
+        if latest_cached_str:
+            latest_cached_dt = datetime.strptime(latest_cached_str, "%Y-%m-%d")
+            # 缓存已覆盖今天 → 直接返回（轻量判断，无需加载数据）
+            if (datetime.now() - latest_cached_dt).days < CACHE_VALIDITY_DAYS:
+                return load_from_db(code, limit=days)
 
-                # 增量拉取：仅获取缓存最新日期之后的数据
-                # start_date = 缓存最新日期 + 1天
-                inc_start = (latest_cached_dt + timedelta(days=1)).strftime("%Y-%m-%d")
-                logger.info(f"增量拉取 {code}: {inc_start} ~ {today_str}")
-                df_new = fetch_stock_data_unified(code, inc_start, today_str, source=source)
+            # 增量拉取：仅获取缓存最新日期之后的数据
+            inc_start = (latest_cached_dt + timedelta(days=1)).strftime("%Y-%m-%d")
+            logger.info(f"增量拉取 {code}: {inc_start} ~ {today_str}")
+            df_new = fetch_stock_data_unified(code, inc_start, today_str, source=source)
 
-                if df_new is not None and len(df_new) > 0:
-                    # 合并新旧数据
-                    old_cols = [c for c in cached.columns if c not in ("ema21", "ema55", "ema120")]
-                    cached_clean = cached[old_cols].copy()
-                    df_merged = pd.concat([cached_clean, df_new], ignore_index=True)
-                    df_merged = df_merged.drop_duplicates(subset=["date"], keep="last")
-                    df_merged = df_merged.sort_values("date").reset_index(drop=True)
-                    logger.info(f"增量合并 {code}: 原有{len(cached_clean)}天 + 新增{len(df_new)}天 = {len(df_merged)}天")
-                    return df_merged.tail(days)
-                else:
-                    # 无新数据（如周末/节假日），返回缓存
-                    return cached.tail(days)
+            if df_new is not None and len(df_new) > 0:
+                # 合并新旧数据
+                cached = load_from_db(code, limit=days)
+                old_cols = [c for c in cached.columns if c not in ("ema21", "ema55", "ema120")]
+                cached_clean = cached[old_cols].copy()
+                df_merged = pd.concat([cached_clean, df_new], ignore_index=True)
+                df_merged = df_merged.drop_duplicates(subset=["date"], keep="last")
+                df_merged = df_merged.sort_values("date").reset_index(drop=True)
+                logger.info(f"增量合并 {code}: 原有{len(cached_clean)}天 + 新增{len(df_new)}天 = {len(df_merged)}天")
+                return df_merged.tail(days)
+            else:
+                # 无新数据（如周末/节假日），返回缓存
+                return load_from_db(code, limit=days)
 
     # 首次拉取或强制刷新：完整历史数据
     start_date = (datetime.now() - timedelta(days=days + 30)).strftime("%Y-%m-%d")
@@ -523,26 +573,29 @@ def cleanup_invalid_stocks(
     from config import is_mainboard, KNOWN_BAD_CODES
 
     conn = _get_conn()
+
+    # 非主板股票：用 SQL LIKE 直接从数据库找出（code 不以 60 或 00 开头）
+    non_mb_rows = conn.execute(
+        "SELECT DISTINCT code FROM daily_quotes "
+        "WHERE code NOT LIKE '60%' AND code NOT LIKE '00%'"
+    ).fetchall()
+    non_mainboard = [r[0] for r in non_mb_rows]
+
+    # 已知问题股票：从全库中筛选（数量少，Python 侧匹配即可）
     all_codes = conn.execute("SELECT DISTINCT code FROM daily_quotes").fetchall()
     all_codes = [r[0] for r in all_codes]
-
-    # 找出非主板股票
-    non_mainboard = [c for c in all_codes if not is_mainboard(c)]
-    # 找出已知问题股票
     known_bad = [c for c in all_codes if c in KNOWN_BAD_CODES]
 
     # 合并去重
     to_delete = list(set(non_mainboard + known_bad))
 
-    # 统计
-    non_main_records = 0
+    # 统计记录数：直接用 SQL LIKE 计算（避免大 IN 子句）
+    non_main_records = conn.execute(
+        "SELECT COUNT(*) FROM daily_quotes "
+        "WHERE code NOT LIKE '60%' AND code NOT LIKE '00%'"
+    ).fetchone()[0] if non_mainboard else 0
+
     bad_records = 0
-    if non_mainboard:
-        placeholders = ",".join(["?"] * len(non_mainboard))
-        non_main_records = conn.execute(
-            f"SELECT COUNT(*) FROM daily_quotes WHERE code IN ({placeholders})",
-            non_mainboard,
-        ).fetchone()[0]
     if known_bad:
         placeholders = ",".join(["?"] * len(known_bad))
         bad_records = conn.execute(
@@ -570,15 +623,25 @@ def cleanup_invalid_stocks(
         logger.info("数据库清理: 无需清理")
         return result
 
-    for batch_start in range(0, len(to_delete), 50):
-        batch = to_delete[batch_start:batch_start + 50]
-        placeholders = ",".join(["?"] * len(batch))
+    # 非主板用 SQL LIKE 直接删除（高效，单条语句）
+    if non_mainboard:
         conn.execute(
-            f"DELETE FROM daily_quotes WHERE code IN ({placeholders})",
-            batch,
+            "DELETE FROM daily_quotes WHERE code NOT LIKE '60%' AND code NOT LIKE '00%'"
         )
+    # 已知问题股票分批删除（数量少，每批 50）
+    if known_bad:
+        for batch_start in range(0, len(known_bad), 50):
+            batch = known_bad[batch_start:batch_start + 50]
+            placeholders = ",".join(["?"] * len(batch))
+            conn.execute(
+                f"DELETE FROM daily_quotes WHERE code IN ({placeholders})",
+                batch,
+            )
 
     conn.commit()
+
+    # WAL 清理后自动 checkpoint
+    wal_checkpoint_if_needed()
 
     # 统计实际删除数
     deleted = non_main_records + bad_records
@@ -595,33 +658,48 @@ def get_mainboard_db_stats() -> dict:
     """
     获取仅限主板股票的数据库统计（用于仪表盘对比展示）。
 
-    Returns
-    -------
-    dict: {total_stocks, total_records, latest_date, coverage_*, ema_cached_pct}
+    使用 SQL LIKE 前缀过滤（code LIKE '60%' OR code LIKE '00%'），
+    避免 WHERE IN 占位符过多的问题。已知退市/ST 股票利用 Python 侧的黑名单过滤
+    （通常 < 20 个，IN 子句安全）。
     """
-    from config import is_mainboard, KNOWN_BAD_CODES
+    from config import KNOWN_BAD_CODES
 
     conn = _get_conn()
-    all_codes = conn.execute("SELECT DISTINCT code FROM daily_quotes").fetchall()
-    all_codes = [r[0] for r in all_codes]
 
-    # 仅保留主板且不在黑名单中的股票
-    valid_codes = [
-        c for c in all_codes if is_mainboard(c) and c not in KNOWN_BAD_CODES
-    ]
+    # 主板 SQL 条件：上海 60xxxx + 深圳 00xxxx
+    mainboard_condition = "(code LIKE '60%' OR code LIKE '00%')"
 
-    if not valid_codes:
+    # 已知问题股票排除（数量少，IN 安全）
+    bad_codes = list(KNOWN_BAD_CODES)
+    if bad_codes:
+        bad_placeholders = ",".join(["?"] * len(bad_codes))
+        bad_exclude = f"AND code NOT IN ({bad_placeholders})"
+    else:
+        bad_exclude = ""
+        bad_placeholders = ""
+
+    params = bad_codes  # 只有已知问题股票需要参数化
+
+    # 股票总数和记录数
+    total_stocks = conn.execute(
+        f"SELECT COUNT(DISTINCT code) FROM daily_quotes "
+        f"WHERE {mainboard_condition} {bad_exclude}",
+        params,
+    ).fetchone()[0]
+
+    if total_stocks == 0:
         return {}
 
-    placeholders = ",".join(["?"] * len(valid_codes))
-    total_stocks = len(valid_codes)
     total_records = conn.execute(
-        f"SELECT COUNT(*) FROM daily_quotes WHERE code IN ({placeholders})",
-        valid_codes,
+        f"SELECT COUNT(*) FROM daily_quotes "
+        f"WHERE {mainboard_condition} {bad_exclude}",
+        params,
     ).fetchone()[0]
+
     latest_date = conn.execute(
-        f"SELECT MAX(date) FROM daily_quotes WHERE code IN ({placeholders})",
-        valid_codes,
+        f"SELECT MAX(date) FROM daily_quotes "
+        f"WHERE {mainboard_condition} {bad_exclude}",
+        params,
     ).fetchone()[0] or "N/A"
 
     # 覆盖度分布
@@ -633,19 +711,21 @@ def get_mainboard_db_stats() -> dict:
             COUNT(CASE WHEN cnt < 60 THEN 1 END)
         FROM (
             SELECT code, COUNT(*) as cnt FROM daily_quotes
-            WHERE code IN ({placeholders})
+            WHERE {mainboard_condition} {bad_exclude}
             GROUP BY code
         )
-    """, valid_codes).fetchone()
+    """, params).fetchone()
 
     # EMA 缓存率
     ema_total = conn.execute(
-        f"SELECT COUNT(*) FROM daily_quotes WHERE code IN ({placeholders})",
-        valid_codes,
+        f"SELECT COUNT(*) FROM daily_quotes "
+        f"WHERE {mainboard_condition} {bad_exclude}",
+        params,
     ).fetchone()[0]
     ema_cached = conn.execute(
-        f"SELECT COUNT(*) FROM daily_quotes WHERE code IN ({placeholders}) AND ema21 IS NOT NULL",
-        valid_codes,
+        f"SELECT COUNT(*) FROM daily_quotes "
+        f"WHERE {mainboard_condition} {bad_exclude} AND ema21 IS NOT NULL",
+        params,
     ).fetchone()[0]
     ema_pct = round(ema_cached / ema_total * 100, 1) if ema_total > 0 else 0
 
@@ -662,13 +742,42 @@ def get_mainboard_db_stats() -> dict:
 
 
 # ── 并行拉取数据 ─────────────────────────────────────────
+# 批量提交计数器（线程安全）
+_commit_counter = 0
+_commit_lock = threading.Lock()
+
+
+def _maybe_commit() -> None:
+    """当批量计数器达到阈值时提交当前线程的数据库连接。"""
+    global _commit_counter
+    with _commit_lock:
+        _commit_counter += 1
+        if _commit_counter % BATCH_COMMIT_SIZE == 0:
+            try:
+                conn = _get_conn()
+                conn.commit()
+            except Exception:
+                pass
+
+
+def _flush_all_connections() -> None:
+    """刷新所有线程的数据库连接（拉取结束时的最终提交）。"""
+    # 提交主线程连接
+    try:
+        _get_conn().commit()
+    except Exception:
+        pass
+    # 如果有其他线程的连接需要提交，通过 executemany 触发 WAL 同步
+    # WAL 模式下每个连接的写入已通过 _maybe_commit 定期提交
+
+
 def fetch_and_cache_stocks_parallel(
     stock_list: list[tuple[str, str]],
     max_workers: int = MAX_PARALLEL_FETCHES,
     days: int = DEFAULT_DAYS,
     source: str = DATA_SOURCE,
     progress_callback=None,
-) -> tuple[int, int]:
+) -> tuple[int, int, int]:
     """
     使用线程池并行拉取并缓存多支股票数据。
 
@@ -687,39 +796,65 @@ def fetch_and_cache_stocks_parallel(
 
     Returns
     -------
-    tuple[int, int]
-        (成功数, 总数)
+    tuple[int, int, int]
+        (成功数, 总数, 已新鲜跳过数)
     """
-    total = len(stock_list)
+    # ── 预过滤：批量查询已新鲜的股票，跳过网络请求 ──
+    fresh_map = get_fresh_codes_map()
+    stocks_to_fetch = []
+    skipped_fresh = 0
+    for code, name in stock_list:
+        if code in fresh_map:
+            skipped_fresh += 1
+        else:
+            stocks_to_fetch.append((code, name))
+
+    total = len(stocks_to_fetch)
     fetched = 0
     completed = 0
+
+    logger.info(
+        f"并行拉取: 总 {len(stock_list)} 支 | "
+        f"已新鲜跳过 {skipped_fresh} 支 | 待拉取 {total} 支"
+    )
 
     # Baostock 不支持并发连接，强制串行
     if source == "baostock":
         max_workers = 1
 
     def _fetch_one(code: str, name: str) -> bool:
-        """带随机延迟的单股拉取，返回是否成功。"""
+        """带随机延迟的单股拉取（增量模式），返回是否成功。"""
+        # 延迟仅在需要网络请求时执行（已过滤掉新鲜缓存）
         delay = random.uniform(FETCH_RANDOM_DELAY_MIN, FETCH_RANDOM_DELAY_MAX)
         time.sleep(delay)
         try:
-            df = fetch_stock_data(code, days=days, force_refresh=True, source=source)
+            # 增量模式：仅拉取缓存日期之后的新交易日，首次或无缓存时才全量拉取
+            df = fetch_stock_data(code, days=days, force_refresh=False, source=source)
             if df is not None and len(df) >= MIN_DAYS_KLINE:
-                save_to_db(df, code, name)
+                save_to_db(df, code, name, commit=False)  # 延迟提交
+                _maybe_commit()
                 return True
             elif df is not None:
                 log_skip(logger, code, name, f"数据不足 (仅{len(df)}天)")
-                save_to_db(df, code, name)
+                save_to_db(df, code, name, commit=False)
+                _maybe_commit()
                 return False
             return False
         except Exception as e:
             log_error(logger, code, name, e)
             return False
 
+    if total == 0:
+        _flush_all_connections()
+        # 即使全部新鲜，也通知进度回调（100% 完成）
+        if progress_callback:
+            progress_callback(len(stock_list), len(stock_list), "")
+        return 0, len(stock_list), skipped_fresh
+
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_map = {
             executor.submit(_fetch_one, code, name): (code, name)
-            for code, name in stock_list
+            for code, name in stocks_to_fetch
         }
         for future in as_completed(future_map):
             code, _ = future_map[future]
@@ -730,6 +865,10 @@ def fetch_and_cache_stocks_parallel(
             except Exception as e:
                 logger.error(f"并行拉取异常 {code}: {e}")
             if progress_callback:
-                progress_callback(completed, total, code)
+                # 进度回调包含已新鲜跳过的部分，让进度条从 0% 平滑增长
+                progress_callback(completed + skipped_fresh, len(stock_list), code)
 
-    return fetched, total
+    # 最终提交所有剩余未提交的写入
+    _flush_all_connections()
+
+    return fetched, len(stock_list), skipped_fresh

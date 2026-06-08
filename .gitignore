@@ -5,6 +5,8 @@ __pycache__/
 
 # Database
 *.db
+*.db-shm
+*.db-wal
 
 # Logs
 *.log
