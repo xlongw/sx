@@ -37,6 +37,7 @@ def _get_conn() -> sqlite3.Connection:
         conn.execute("PRAGMA journal_mode=WAL")
         conn.execute("PRAGMA synchronous=NORMAL")
         conn.execute("PRAGMA cache_size=-8000")  # 8MB cache
+        conn.execute("PRAGMA busy_timeout=10000")  # 写锁等待 10s，避免 "database is locked"
         _conn_local.conn = conn
     return conn
 
@@ -46,6 +47,10 @@ def _close_conn() -> None:
     conn = getattr(_conn_local, "conn", None)
     if conn:
         try:
+            conn.commit()
+        except Exception:
+            pass
+        try:
             conn.close()
         except Exception:
             pass
@@ -54,25 +59,47 @@ def _close_conn() -> None:
 
 # ── 数据库初始化 ─────────────────────────────────────────
 _WAL_CHECKPOINT_THRESHOLD = 2 * 1024 * 1024  # WAL 文件超过 2MB 时触发 checkpoint
+_WAL_CHECKPOINT_COOLDOWN = 300               # checkpoint 最小间隔（秒），防止频繁重试
+_last_checkpoint_time = 0
 
 
 def wal_checkpoint_if_needed() -> int:
     """
-    检查 WAL 文件大小，超过阈值则执行 checkpoint 并截断。
+    检查 WAL 文件大小，超过阈值则执行 checkpoint（PASSIVE 模式）。
+
+    PASSIVE 模式不会阻塞其他连接，安全地移动已提交数据到主数据库。
+    由于 Streamlit 运行时存在活跃 reader，TRUNCATE 无法完成，
+    因此 WAL 文件大小在运行期间可能不会归零，但内容会持续回写到主库。
+
     返回 WAL 文件截断前的大小（bytes），无需处理则返回 0。
     """
+    global _last_checkpoint_time
     import os
+    import time as _time
     wal_path = DB_PATH + "-wal"
     if not os.path.exists(wal_path):
         return 0
     wal_size = os.path.getsize(wal_path)
     if wal_size < _WAL_CHECKPOINT_THRESHOLD:
         return 0
+
+    # 冷却期：避免 Streamlit 每次 rerun 都触发 checkpoint（thrashing）
+    now = _time.time()
+    if now - _last_checkpoint_time < _WAL_CHECKPOINT_COOLDOWN:
+        return 0
+    _last_checkpoint_time = now
+
     try:
         conn = _get_conn()
-        conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
-        logger.info(f"WAL checkpoint 完成: {wal_size/1024/1024:.1f}MB → "
-                    f"{os.path.getsize(wal_path)/1024:.1f}MB" if os.path.exists(wal_path) else "0MB")
+        # PASSIVE: 不阻塞 reader，安全递增式 checkpoint
+        result = conn.execute("PRAGMA wal_checkpoint(PASSIVE)").fetchone()
+        # result = (busy, log_checkpointed, log_total)
+        new_size = os.path.getsize(wal_path) if os.path.exists(wal_path) else 0
+        logger.info(
+            f"WAL checkpoint 完成: {wal_size/1024/1024:.1f}MB → "
+            f"{new_size/1024/1024:.1f}MB "
+            f"(已回写 {result[1]}/{result[2]} 帧)"
+        )
         return wal_size
     except Exception as e:
         logger.warning(f"WAL checkpoint 失败: {e}")
@@ -187,12 +214,13 @@ def get_all_cached_codes() -> set:
 
 
 def is_cache_fresh(code: str) -> bool:
-    """检查缓存是否在有效期内。"""
+    """检查缓存是否在有效期内。（只有今天的数据才算新鲜）"""
     latest = get_cached_date(code)
     if latest is None:
         return False
     latest_dt = datetime.strptime(latest, "%Y-%m-%d")
-    return (datetime.now() - latest_dt).days < CACHE_VALIDITY_DAYS
+    # 只有缓存最新日期 = 今天才算新鲜（允许当天多次刷新获取当日收盘数据）
+    return latest_dt.strftime("%Y-%m-%d") == datetime.now().strftime("%Y-%m-%d")
 
 
 def get_fresh_codes_map() -> dict[str, str]:
@@ -202,12 +230,16 @@ def get_fresh_codes_map() -> dict[str, str]:
     一次性 SQL 查询替代逐支 is_cache_fresh() 调用，
     用于 refresh 前快速过滤掉无需更新的股票。
 
+    注意：只有最新日期 = 今天才算"新鲜"，昨天及更早的数据
+    仍然尝试增量拉取（可能获取到当天收盘数据）。
+
     Returns
     -------
     dict[str, str]: {code: latest_date_str} 仅返回缓存新鲜的股票。
     """
     conn = _get_conn()
-    cutoff = (datetime.now() - timedelta(days=CACHE_VALIDITY_DAYS)).strftime("%Y-%m-%d")
+    # 只有今天的数据才算"新鲜"；昨天及更早的数据仍可尝试拉取今天收盘数据
+    cutoff = datetime.now().strftime("%Y-%m-%d")
     rows = conn.execute(
         "SELECT code, MAX(date) FROM daily_quotes "
         "GROUP BY code HAVING MAX(date) >= ?",
@@ -742,33 +774,12 @@ def get_mainboard_db_stats() -> dict:
 
 
 # ── 并行拉取数据 ─────────────────────────────────────────
-# 批量提交计数器（线程安全）
-_commit_counter = 0
-_commit_lock = threading.Lock()
-
-
-def _maybe_commit() -> None:
-    """当批量计数器达到阈值时提交当前线程的数据库连接。"""
-    global _commit_counter
-    with _commit_lock:
-        _commit_counter += 1
-        if _commit_counter % BATCH_COMMIT_SIZE == 0:
-            try:
-                conn = _get_conn()
-                conn.commit()
-            except Exception:
-                pass
-
-
 def _flush_all_connections() -> None:
-    """刷新所有线程的数据库连接（拉取结束时的最终提交）。"""
-    # 提交主线程连接
+    """确保当前线程的数据库连接已提交（拉取结束时的最终提交）。"""
     try:
         _get_conn().commit()
     except Exception:
         pass
-    # 如果有其他线程的连接需要提交，通过 executemany 触发 WAL 同步
-    # WAL 模式下每个连接的写入已通过 _maybe_commit 定期提交
 
 
 def fetch_and_cache_stocks_parallel(
@@ -831,13 +842,11 @@ def fetch_and_cache_stocks_parallel(
             # 增量模式：仅拉取缓存日期之后的新交易日，首次或无缓存时才全量拉取
             df = fetch_stock_data(code, days=days, force_refresh=False, source=source)
             if df is not None and len(df) >= MIN_DAYS_KLINE:
-                save_to_db(df, code, name, commit=False)  # 延迟提交
-                _maybe_commit()
+                save_to_db(df, code, name, commit=True)  # 逐条提交，避免数据丢失
                 return True
             elif df is not None:
                 log_skip(logger, code, name, f"数据不足 (仅{len(df)}天)")
-                save_to_db(df, code, name, commit=False)
-                _maybe_commit()
+                save_to_db(df, code, name, commit=True)
                 return False
             return False
         except Exception as e:

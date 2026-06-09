@@ -32,18 +32,27 @@ _clean_pycache()
 
 
 # ── 端口检测（启动前检查，避免多实例冲突） ─────────────────
+def _is_streamlit_session() -> bool:
+    """检测是否在 Streamlit 脚本执行上下文中（含首次运行及重运行）。
+    如果是，说明 Streamlit 服务器已经启动，端口被占用是正常的。"""
+    try:
+        from streamlit.runtime.scriptrunner import get_script_run_ctx
+        return get_script_run_ctx() is not None
+    except Exception:
+        return False
+
+
 def _check_port(port: int = 8501) -> bool:
-    """检查端口是否已被占用，返回 True 表示端口可用。"""
+    """检查端口是否已被占用（connect 方式，不尝试 bind）。
+    返回 True 表示端口可用。"""
     import socket as _socket
     with _socket.socket(_socket.AF_INET, _socket.SOCK_STREAM) as _sock:
-        try:
-            _sock.bind(("0.0.0.0", port))
-            return True
-        except OSError:
-            return False
+        _sock.settimeout(0.5)
+        result = _sock.connect_ex(("127.0.0.1", port))
+        return result != 0  # 0 = 连接成功 = 端口已被监听
 
 
-if not _check_port(8501):
+if not _check_port(8501) and not _is_streamlit_session():
     import logging as _logging
     _logging.getLogger(__name__).warning(
         "⚠️ 端口 8501 已被占用，可能存在旧 Streamlit 进程。"
