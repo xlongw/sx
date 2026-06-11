@@ -22,7 +22,9 @@
       "Bash(netstat -ano)",
       "Bash(tasklist /FI \"PID eq 26020\")",
       "Bash(tasklist /FI \"PID eq 8652\")",
-      "Bash(powershell *)"
+      "Bash(powershell *)",
+      "Bash(taskkill /F /IM python.exe)",
+      "Bash(taskkill /F /IM streamlit.exe)"
     ]
   }
 }

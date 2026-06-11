@@ -20,6 +20,7 @@ _bs_lock = threading.Lock()  # Baostock 不支持并发，所有 API 调用必�
 # ── 重试配置 ──────────────────────────────────────────────
 MAX_RETRIES = 3              # 最大重试次数
 RETRY_BASE_DELAY = 1.0       # 重试基础延迟（秒），指数增长: 1→2→4
+SOCKET_TIMEOUT = 30          # 网络请求超时（秒），防止 Baostock 挂起
 
 
 def bs_login() -> bool:
@@ -89,34 +90,41 @@ def fetch_stock_data_baostock(code: str, start_date: str, end_date: str):
 
     for attempt in range(1, MAX_RETRIES + 1):
         try:
-            # Baostock 不支持并发，查询 + 数据检索全程串行化
-            with _bs_lock:
-                rs = bs.query_history_k_data_plus(
-                    bs_code,
-                    "date,open,high,low,close,volume",
-                    start_date=start_date,
-                    end_date=end_date,
-                    frequency="d",
-                    adjustflag="2",  # 前复权
-                )
+            # 设置网络超时，防止 Baostock 请求永久挂起
+            import socket as _socket
+            _old_timeout = _socket.getdefaulttimeout()
+            _socket.setdefaulttimeout(SOCKET_TIMEOUT)
+            try:
+                # Baostock 不支持并发，查询 + 数据检索全程串行化
+                with _bs_lock:
+                    rs = bs.query_history_k_data_plus(
+                        bs_code,
+                        "date,open,high,low,close,volume",
+                        start_date=start_date,
+                        end_date=end_date,
+                        frequency="d",
+                        adjustflag="2",  # 前复权
+                    )
 
-                if rs is None or rs.error_code != "0":
-                    err_msg = rs.error_msg if rs else "rs is None"
-                    # 网络错误类 → 重试；业务错误类 → 直接返回
-                    if _is_network_error(err_msg):
-                        logger.warning(
-                            f"Baostock 网络错误 {code} (第{attempt}次): {err_msg}"
-                        )
-                        if attempt < MAX_RETRIES:
-                            _retry_delay(attempt, code)
-                            _reconnect_if_needed()
-                            continue
-                    logger.warning(f"Baostock 查询失败 {code}: {err_msg}")
-                    return None
+                    if rs is None or rs.error_code != "0":
+                        err_msg = rs.error_msg if rs else "rs is None"
+                        # 网络错误类 → 重试；业务错误类 → 直接返回
+                        if _is_network_error(err_msg):
+                            logger.warning(
+                                f"Baostock 网络错误 {code} (第{attempt}次): {err_msg}"
+                            )
+                            if attempt < MAX_RETRIES:
+                                _retry_delay(attempt, code)
+                                _reconnect_if_needed()
+                                continue
+                        logger.warning(f"Baostock 查询失败 {code}: {err_msg}")
+                        return None
 
-                data_list = []
-                while rs.next():
-                    data_list.append(rs.get_row_data())
+                    data_list = []
+                    while rs.next():
+                        data_list.append(rs.get_row_data())
+            finally:
+                _socket.setdefaulttimeout(_old_timeout)
 
             # 锁外处理数据（pandas 操作不需要锁）
             if not data_list:
@@ -222,38 +230,46 @@ def fetch_stock_data_akshare(code: str, start_date: str, end_date: str):
         _urllib_req.getproxies = lambda: {}
 
         try:
-            # AkShare 的日期格式为 YYYYMMDD
-            start_fmt = start_date.replace("-", "")
-            end_fmt = end_date.replace("-", "")
+            # 设置网络超时 + 代理清理
+            import socket as _socket
+            _old_timeout = _socket.getdefaulttimeout()
+            _socket.setdefaulttimeout(SOCKET_TIMEOUT)
+            try:
+                # AkShare 的日期格式为 YYYYMMDD
+                start_fmt = start_date.replace("-", "")
+                end_fmt = end_date.replace("-", "")
 
-            df = ak.stock_zh_a_hist(
-                symbol=code,
-                period="daily",
-                start_date=start_fmt,
-                end_date=end_fmt,
-                adjust="qfq",  # 前复权
-            )
+                df = ak.stock_zh_a_hist(
+                    symbol=code,
+                    period="daily",
+                    start_date=start_fmt,
+                    end_date=end_fmt,
+                    adjust="qfq",  # 前复权
+                )
 
-            if df is None or df.empty:
-                logger.warning(f"AkShare 查询为空 {code}")
-                return None
+                if df is None or df.empty:
+                    logger.warning(f"AkShare 查询为空 {code}")
+                    return None
 
-            # 统一列名：中文 → 英文
-            col_map = {
-                "日期": "date",
-                "开盘": "open",
-                "最高": "high",
-                "最低": "low",
-                "收盘": "close",
-                "成交量": "volume",
-            }
-            df = df.rename(columns=col_map)
-            df["date"] = pd.to_datetime(df["date"])
-            for col in ["open", "high", "low", "close", "volume"]:
-                if col in df.columns:
-                    df[col] = pd.to_numeric(df[col], errors="coerce")
+                # 统一列名：中文 → 英文
+                col_map = {
+                    "日期": "date",
+                    "开盘": "open",
+                    "最高": "high",
+                    "最低": "low",
+                    "收盘": "close",
+                    "成交量": "volume",
+                }
+                df = df.rename(columns=col_map)
+                df["date"] = pd.to_datetime(df["date"])
+                for col in ["open", "high", "low", "close", "volume"]:
+                    if col in df.columns:
+                        df[col] = pd.to_numeric(df[col], errors="coerce")
 
-            return df[["date", "open", "high", "low", "close", "volume"]]
+                return df[["date", "open", "high", "low", "close", "volume"]]
+
+            finally:
+                _socket.setdefaulttimeout(_old_timeout)
 
         except Exception as e:
             err_str = str(e).lower()
