@@ -29,6 +29,7 @@ class SidebarSettings:
     """收纳侧边栏所有控件的返回值。"""
 
     data_source: str = "baostock"
+    speed_mode: str = "balanced"  # "balanced" | "fast"
     logic_mode: str = "OR"
     enabled_a: bool = True
     threshold_a_dev: int = 15
@@ -62,6 +63,17 @@ def render_sidebar() -> SidebarSettings:
             format_func=lambda x: "Baostock（免费、稳定）" if x == "baostock" else "AkShare（免费、数据全）",
             index=0 if DATA_SOURCE == "baostock" else 1,
             help="Baostock: 需登录，数据稳定；AkShare: 无需登录，数据更全",
+        )
+
+        s.speed_mode = st.radio(
+            "⏱️ 刷新速度",
+            options=["balanced", "fast"],
+            format_func=lambda x: {
+                "balanced": "均衡 — 拉取昨日+今日数据（推荐）",
+                "fast": "快速 — 仅拉取今日数据（跳过已有昨日数据的股票）",
+            }[x],
+            index=0,
+            help="均衡模式: 确保至少昨日数据新鲜；快速模式: 跳过更多股票，速度更快",
         )
 
         st.divider()

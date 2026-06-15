@@ -12,22 +12,40 @@ from utils import setup_logger
 logger = setup_logger(__name__)
 
 
-@st.cache_data(ttl=30, show_spinner=False)
+@st.cache_data(ttl=10, show_spinner=False)  # 短 TTL，避免错误结果被长时间缓存
 def get_db_stats() -> dict:
     """查询数据库统计数据，同时返回全库和仅主板的统计。"""
+    conn = _get_conn()
+    total_stocks = 0
+    total_records = 0
+    latest_date = "N/A"
+    coverage = (0, 0, 0, 0)
+    ema_pct = 0
+    mb_stats = {}
+    errors = []
+
     try:
-        conn = _get_conn()
         total_stocks = conn.execute(
             "SELECT COUNT(DISTINCT code) FROM daily_quotes"
         ).fetchone()[0]
+    except Exception as e:
+        errors.append(f"股票总数: {e}")
+
+    try:
         total_records = conn.execute(
             "SELECT COUNT(*) FROM daily_quotes"
         ).fetchone()[0]
+    except Exception as e:
+        errors.append(f"记录数: {e}")
+
+    try:
         latest_date = conn.execute(
             "SELECT MAX(date) FROM daily_quotes"
         ).fetchone()[0] or "N/A"
+    except Exception as e:
+        errors.append(f"最新日期: {e}")
 
-        # 数据覆盖健康度：统计各股票数据天数分布
+    try:
         coverage = conn.execute("""
             SELECT
                 COUNT(CASE WHEN cnt >= 300 THEN 1 END) as good,
@@ -36,33 +54,38 @@ def get_db_stats() -> dict:
                 COUNT(CASE WHEN cnt < 60 THEN 1 END) as poor
             FROM (SELECT code, COUNT(*) as cnt FROM daily_quotes GROUP BY code)
         """).fetchone()
+    except Exception as e:
+        errors.append(f"覆盖度: {e}")
 
-        # EMA 缓存覆盖率
-        ema_total = conn.execute(
-            "SELECT COUNT(*) FROM daily_quotes"
-        ).fetchone()[0]
+    try:
+        ema_total = conn.execute("SELECT COUNT(*) FROM daily_quotes").fetchone()[0]
         ema_cached = conn.execute(
             "SELECT COUNT(*) FROM daily_quotes WHERE ema21 IS NOT NULL"
         ).fetchone()[0]
         ema_pct = round(ema_cached / ema_total * 100, 1) if ema_total > 0 else 0
-
-        # 仅主板股票统计
-        mb_stats = get_mainboard_db_stats()
-
-        return {
-            "total_stocks": total_stocks,
-            "total_records": total_records,
-            "latest_date": latest_date,
-            "coverage_good": coverage[0],
-            "coverage_fair": coverage[1],
-            "coverage_low": coverage[2],
-            "coverage_poor": coverage[3],
-            "ema_cached_pct": ema_pct,
-            "mainboard": mb_stats,
-        }
     except Exception as e:
-        logger.warning(f"获取数据库统计失败: {e}")
-        return {}
+        errors.append(f"EMA: {e}")
+
+    try:
+        mb_stats = get_mainboard_db_stats()
+    except Exception as e:
+        errors.append(f"主板统计: {e}")
+
+    if errors:
+        logger.warning(f"获取数据库统计部分失败 ({len(errors)}): {'; '.join(errors[:3])}")
+
+    return {
+        "total_stocks": total_stocks,
+        "total_records": total_records,
+        "latest_date": latest_date,
+        "coverage_good": coverage[0] if coverage else 0,
+        "coverage_fair": coverage[1] if coverage else 0,
+        "coverage_low": coverage[2] if coverage else 0,
+        "coverage_poor": coverage[3] if coverage else 0,
+        "ema_cached_pct": ema_pct,
+        "mainboard": mb_stats,
+        "errors": errors,
+    }
 
 
 def render_db_dashboard(
@@ -72,8 +95,14 @@ def render_db_dashboard(
     cleanup_warning: str = "",
 ) -> None:
     """渲染数据质量仪表盘。首次访问自动展开，后续折叠不遮挡页面。"""
-    if not stats:
+    # 允许缺少部分数据的仪表盘继续渲染（不因个别查询失败而完全空白）
+    if stats.get("total_stocks", 0) == 0 and stats.get("total_records", 0) == 0:
+        st.info("📊 数据仪表盘正在加载中，请稍候…")
         return
+
+    errors = stats.get("errors", [])
+    if errors:
+        st.warning(f"⚠️ 部分统计数据加载失败 ({len(errors)} 项)，显示结果可能不完整")
 
     mb = stats.get("mainboard", {})
 

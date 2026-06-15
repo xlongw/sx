@@ -223,23 +223,23 @@ def is_cache_fresh(code: str) -> bool:
     return latest_dt.strftime("%Y-%m-%d") == datetime.now().strftime("%Y-%m-%d")
 
 
-def get_fresh_codes_map() -> dict[str, str]:
+def get_fresh_codes_map(freshness_days: int = 0) -> dict[str, str]:
     """
     批量查询所有缓存新鲜的股票代码 → 最新日期映射。
 
-    一次性 SQL 查询替代逐支 is_cache_fresh() 调用，
-    用于 refresh 前快速过滤掉无需更新的股票。
-
-    注意：只有最新日期 = 今天才算"新鲜"，昨天及更早的数据
-    仍然尝试增量拉取（可能获取到当天收盘数据）。
+    Parameters
+    ----------
+    freshness_days : int
+        0 = 只有今天数据算新鲜 (strict, 默认)
+        1 = 今天或昨天数据算新鲜 (fast mode)
+        2 = 三天内数据算新鲜
 
     Returns
     -------
-    dict[str, str]: {code: latest_date_str} 仅返回缓存新鲜的股票。
+    dict[str, str]: {code: latest_date_str} 仅返回缓存新鲜的股票（会被跳过拉取）。
     """
     conn = _get_conn()
-    # 只有今天的数据才算"新鲜"；昨天及更早的数据仍可尝试拉取今天收盘数据
-    cutoff = datetime.now().strftime("%Y-%m-%d")
+    cutoff = (datetime.now() - timedelta(days=freshness_days)).strftime("%Y-%m-%d")
     rows = conn.execute(
         "SELECT code, MAX(date) FROM daily_quotes "
         "GROUP BY code HAVING MAX(date) >= ?",
@@ -251,7 +251,8 @@ def get_fresh_codes_map() -> dict[str, str]:
 # ── 获取并缓存 ───────────────────────────────────────────
 def fetch_stock_data(code: str, days: int = DEFAULT_DAYS,
                      force_refresh: bool = False,
-                     source: str = DATA_SOURCE) -> pd.DataFrame | None:
+                     source: str = DATA_SOURCE,
+                     skip_fresh_check: bool = False) -> pd.DataFrame | None:
     """
     获取股票数据（优先缓存，增量拉取新数据）。
 
@@ -268,6 +269,8 @@ def fetch_stock_data(code: str, days: int = DEFAULT_DAYS,
         是否强制完整刷新。
     source : str
         数据源: "baostock" 或 "akshare"。
+    skip_fresh_check : bool
+        True 时跳过 per-stock 新鲜度检查（已由 get_fresh_codes_map 预过滤）。
 
     Returns
     -------
@@ -280,9 +283,10 @@ def fetch_stock_data(code: str, days: int = DEFAULT_DAYS,
         latest_cached_str = get_cached_date(code)
         if latest_cached_str:
             latest_cached_dt = datetime.strptime(latest_cached_str, "%Y-%m-%d")
-            # 缓存已覆盖今天 → 直接返回（轻量判断，无需加载数据）
-            if (datetime.now() - latest_cached_dt).days < CACHE_VALIDITY_DAYS:
-                return load_from_db(code, limit=days)
+            # 缓存已覆盖今天 → 直接返回（仅当未跳过新鲜度检查时）
+            if not skip_fresh_check:
+                if (datetime.now() - latest_cached_dt).days < CACHE_VALIDITY_DAYS:
+                    return load_from_db(code, limit=days)
 
             # 增量拉取：仅获取缓存最新日期之后的数据
             inc_start = (latest_cached_dt + timedelta(days=1)).strftime("%Y-%m-%d")
@@ -787,6 +791,7 @@ def fetch_and_cache_stocks_parallel(
     max_workers: int = MAX_PARALLEL_FETCHES,
     days: int = DEFAULT_DAYS,
     source: str = DATA_SOURCE,
+    freshness_days: int = 0,
     progress_callback=None,
 ) -> tuple[int, int, int]:
     """
@@ -802,6 +807,8 @@ def fetch_and_cache_stocks_parallel(
         获取历史数据天数。
     source : str
         数据源: "baostock" 或 "akshare"。
+    freshness_days : int
+        缓存新鲜度容忍天数（0=仅今天, 1=今天/昨天, 2=三天内）。
     progress_callback : callable or None
         进度回调，签名为 callback(done: int, total: int, code: str)。
 
@@ -811,7 +818,7 @@ def fetch_and_cache_stocks_parallel(
         (成功数, 总数, 已新鲜跳过数)
     """
     # ── 预过滤：批量查询已新鲜的股票，跳过网络请求 ──
-    fresh_map = get_fresh_codes_map()
+    fresh_map = get_fresh_codes_map(freshness_days=freshness_days)
     stocks_to_fetch = []
     skipped_fresh = 0
     for code, name in stock_list:
@@ -827,22 +834,26 @@ def fetch_and_cache_stocks_parallel(
     logger.info(
         f"并行拉取: 总 {len(stock_list)} 支 | "
         f"已新鲜跳过 {skipped_fresh} 支 | 待拉取 {total} 支"
+        f"{' (快速模式: 容忍' + str(freshness_days) + '天)' if freshness_days > 0 else ''}"
     )
 
-    # Baostock 不支持并发连接，强制串行
+    # Baostock: 串行拉取但跳过额外延迟（_bs_lock 已保证串行化）
     if source == "baostock":
-        max_workers = 1
+        max_workers = min(max_workers, 2)  # pipeline: 1 fetch + 1 process
+        _use_delay = False
+    else:
+        _use_delay = True
 
     def _fetch_one(code: str, name: str) -> bool:
-        """带随机延迟的单股拉取（增量模式），返回是否成功。"""
-        # 延迟仅在需要网络请求时执行（已过滤掉新鲜缓存）
-        delay = random.uniform(FETCH_RANDOM_DELAY_MIN, FETCH_RANDOM_DELAY_MAX)
-        time.sleep(delay)
+        """单股拉取（增量模式），返回是否成功。"""
+        if _use_delay:
+            time.sleep(random.uniform(FETCH_RANDOM_DELAY_MIN, FETCH_RANDOM_DELAY_MAX))
         try:
-            # 增量模式：仅拉取缓存日期之后的新交易日，首次或无缓存时才全量拉取
-            df = fetch_stock_data(code, days=days, force_refresh=False, source=source)
+            # 跳过冗余的新鲜度检查（get_fresh_codes_map 已预过滤）
+            df = fetch_stock_data(code, days=days, force_refresh=False,
+                                  source=source, skip_fresh_check=True)
             if df is not None and len(df) >= MIN_DAYS_KLINE:
-                save_to_db(df, code, name, commit=True)  # 逐条提交，避免数据丢失
+                save_to_db(df, code, name, commit=True)
                 return True
             elif df is not None:
                 log_skip(logger, code, name, f"数据不足 (仅{len(df)}天)")
@@ -855,7 +866,6 @@ def fetch_and_cache_stocks_parallel(
 
     if total == 0:
         _flush_all_connections()
-        # 即使全部新鲜，也通知进度回调（100% 完成）
         if progress_callback:
             progress_callback(len(stock_list), len(stock_list), "")
         return 0, len(stock_list), skipped_fresh
@@ -874,7 +884,6 @@ def fetch_and_cache_stocks_parallel(
             except Exception as e:
                 logger.error(f"并行拉取异常 {code}: {e}")
             if progress_callback:
-                # 进度回调包含已新鲜跳过的部分，让进度条从 0% 平滑增长
                 progress_callback(completed + skipped_fresh, len(stock_list), code)
 
     # 最终提交所有剩余未提交的写入

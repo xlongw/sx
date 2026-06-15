@@ -4,6 +4,7 @@ Data fetcher via Baostock (free, no registration needed).
 """
 
 import time
+import random
 import threading
 import pandas as pd
 import baostock as bs
@@ -15,7 +16,7 @@ logger = setup_logger(__name__)
 
 # 全局登录状态标记
 _bs_logged_in = False
-_bs_lock = threading.Lock()  # Baostock 不支持并发，所有 API 调用必须串行
+_bs_lock = threading.RLock()  # 可重入锁：retry 路径中 _reconnect_if_needed 会再次调用 bs_login
 
 # ── 重试配置 ──────────────────────────────────────────────
 MAX_RETRIES = 3              # 最大重试次数
@@ -32,7 +33,13 @@ def bs_login() -> bool:
         if _bs_logged_in:  # 双重检查
             return True
         try:
-            lg = bs.login()
+            import socket as _socket
+            _old_timeout = _socket.getdefaulttimeout()
+            _socket.setdefaulttimeout(SOCKET_TIMEOUT)
+            try:
+                lg = bs.login()
+            finally:
+                _socket.setdefaulttimeout(_old_timeout)
             if lg.error_code == "0":
                 _bs_logged_in = True
                 logger.info("Baostock 登录成功")
@@ -173,10 +180,14 @@ def _is_retryable(err_str: str) -> bool:
     return any(kw in err_str for kw in keywords)
 
 
-def _retry_delay(attempt: int, code: str) -> None:
-    """指数退避延迟。"""
-    delay = RETRY_BASE_DELAY * (2 ** (attempt - 1))
-    logger.info(f"等待 {delay:.0f}s 后重试 {code}...")
+def _retry_delay(attempt: int, code: str, source: str = "baostock") -> None:
+    """指数退避延迟，带随机抖动防止重试风暴。"""
+    base = RETRY_BASE_DELAY * (2 ** (attempt - 1))
+    if source == "akshare":
+        base *= 2  # AkShare 对高频更敏感，加重延迟
+    jitter = random.uniform(0, base * 0.5)  # ±50% 随机抖动
+    delay = base + jitter
+    logger.info(f"等待 {delay:.1f}s 后重试 {code}...")
     time.sleep(delay)
 
 
@@ -275,7 +286,7 @@ def fetch_stock_data_akshare(code: str, start_date: str, end_date: str):
             err_str = str(e).lower()
             logger.warning(f"AkShare 获取异常 {code} (第{attempt}次): {e}")
             if attempt < MAX_RETRIES and _is_retryable(err_str):
-                _retry_delay(attempt, code)
+                _retry_delay(attempt, code, source="akshare")
                 continue
             logger.error(f"AkShare 获取失败 {code} (已重试{MAX_RETRIES}次): {e}")
             return None

@@ -24,7 +24,8 @@
       "Bash(tasklist /FI \"PID eq 8652\")",
       "Bash(powershell *)",
       "Bash(taskkill /F /IM python.exe)",
-      "Bash(taskkill /F /IM streamlit.exe)"
+      "Bash(taskkill /F /IM streamlit.exe)",
+      "Bash(python3 *)"
     ]
   }
 }

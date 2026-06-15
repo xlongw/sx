@@ -253,8 +253,11 @@ def main():
             pct = int(done / total_count * 100)
             progress_bar.progress(pct, text=f"已处理 {done}/{total_count}: {code}")
 
+        freshness_days = 0 if s.speed_mode == "balanced" else 1
         fetched, _, skipped_fresh = fetch_and_cache_stocks_parallel(
-            stock_list, source=s.data_source, progress_callback=_update_progress,
+            stock_list, source=s.data_source,
+            freshness_days=freshness_days,
+            progress_callback=_update_progress,
         )
 
         progress_bar.empty()

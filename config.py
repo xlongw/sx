@@ -32,10 +32,11 @@ CACHE_VALIDITY_DAYS = 1
 
 # ── 并行拉取数据配置 ────────────────────────────────────
 # 注意: Baostock 对高频请求敏感，并发数不宜过大，延迟不宜过短
-MAX_PARALLEL_FETCHES = 2              # 线程池最大并发数（baostock 强制串行，akshare 可用 2~8）
-FETCH_RANDOM_DELAY_MIN = 0.1          # 请求前随机延迟最小值（秒）
-FETCH_RANDOM_DELAY_MAX = 0.3          # 请求前随机延迟最大值（秒）
+MAX_PARALLEL_FETCHES = 2              # 线程池最大并发数（太高会导致服务器断开连接）
+FETCH_RANDOM_DELAY_MIN = 0.05         # 请求前随机延迟最小值（秒），串行模式自动跳过
+FETCH_RANDOM_DELAY_MAX = 0.15         # 请求前随机延迟最大值（秒）
 BATCH_COMMIT_SIZE = 50                # 批量提交：每 N 支股票 commit 一次
+BAOSTOCK_MAX_WORKERS = 2              # Baostock 专用并发数（推荐 2，利用 pipeline 隐藏处理时间）
 
 # ── 数据源选择 ──────────────────────────────────────────
 DATA_SOURCE = "baostock"              # 默认数据源: "baostock" 或 "akshare"
