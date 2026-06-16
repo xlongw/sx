@@ -8,14 +8,14 @@ import time
 import random
 import threading
 import pandas as pd
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor, as_completed
 from datetime import datetime, timedelta
 
 from config import (
     DB_PATH, DEFAULT_DAYS, CACHE_VALIDITY_DAYS, MIN_DAYS_KLINE,
     MIN_CACHE_DAYS, BACKFILL_LOOKBACK_DAYS,
     MAX_PARALLEL_FETCHES, FETCH_RANDOM_DELAY_MIN, FETCH_RANDOM_DELAY_MAX,
-    BATCH_COMMIT_SIZE,
+    BATCH_COMMIT_SIZE, BAOSTOCK_MP_WORKERS,
     DATA_SOURCE,
 )
 from data_fetcher import fetch_stock_data_unified
@@ -786,6 +786,54 @@ def _flush_all_connections() -> None:
         pass
 
 
+# ── 多进程 Worker（Baostock 并行拉取） ─────────────────
+def _process_fetch_chunk(args: tuple) -> dict:
+    """
+    在子进程中执行：独立登录 Baostock，逐只调用 fetch_stock_data + save_to_db。
+
+    每个子进程拥有独立的 Baostock 会话和数据库连接。
+    WAL 模式允许多进程并发读写。
+
+    Parameters
+    ----------
+    args : tuple
+        (chunk, days, source) — chunk 为 [(code, name), ...] 列表。
+
+    Returns
+    -------
+    dict: {"fetched": int, "errors": list}
+    """
+    chunk, days, source = args
+
+    # 子进程启动：登录数据源
+    from data_fetcher import bs_login, bs_logout
+
+    if source == "baostock":
+        bs_login()
+
+    fetched = 0
+    errors = []
+
+    for code, name in chunk:
+        try:
+            # 复用现有函数（子进程中 _get_conn 会创建独立连接）
+            df = fetch_stock_data(code, days=days, force_refresh=False,
+                                  source=source, skip_fresh_check=True)
+            if df is not None and len(df) >= MIN_DAYS_KLINE:
+                save_to_db(df, code, name, commit=True)
+                fetched += 1
+        except Exception as e:
+            errors.append(f"{code} {name}: {e}")
+
+    if source == "baostock":
+        try:
+            bs_logout()
+        except Exception:
+            pass
+
+    return {"fetched": fetched, "errors": errors}
+
+
 def fetch_and_cache_stocks_parallel(
     stock_list: list[tuple[str, str]],
     max_workers: int = MAX_PARALLEL_FETCHES,
@@ -837,19 +885,58 @@ def fetch_and_cache_stocks_parallel(
         f"{' (快速模式: 容忍' + str(freshness_days) + '天)' if freshness_days > 0 else ''}"
     )
 
-    # Baostock: 串行拉取但跳过额外延迟（_bs_lock 已保证串行化）
-    if source == "baostock":
-        max_workers = min(max_workers, 2)  # pipeline: 1 fetch + 1 process
-        _use_delay = False
-    else:
-        _use_delay = True
+    if total == 0:
+        _flush_all_connections()
+        if progress_callback:
+            progress_callback(len(stock_list), len(stock_list), "")
+        return 0, len(stock_list), skipped_fresh
+
+    # ── Baostock: 多进程并行（每个进程独立登录拉取） ──
+    if source == "baostock" and BAOSTOCK_MP_WORKERS >= 2 and total >= 2:
+        _workers = min(BAOSTOCK_MP_WORKERS, 4, total)
+
+        # 小任务粒度（~15 只/任务），确保进度条更新频繁
+        _chunk_size = max(10, min(20, total // (_workers * 2)))
+        chunks = [
+            (stocks_to_fetch[i:i + _chunk_size], days, source)
+            for i in range(0, total, _chunk_size)
+        ]
+
+        logger.info(
+            f"Baostock 多进程拉取: {total} 支 → {len(chunks)} 个任务"
+            f" × {_workers} 进程 (每任务 ~{_chunk_size} 支)"
+        )
+
+        _fetched_stocks = [0]
+        with ProcessPoolExecutor(max_workers=_workers) as executor:
+            future_map = {
+                executor.submit(_process_fetch_chunk, chunk): idx
+                for idx, chunk in enumerate(chunks)
+            }
+            for future in as_completed(future_map):
+                try:
+                    result = future.result()
+                    _fetched_stocks[0] += result.get("fetched", 0)
+                    for err in result.get("errors", []):
+                        logger.warning(f"子进程拉取异常: {err}")
+                except Exception as e:
+                    logger.error(f"子进程执行异常: {e}")
+                if progress_callback:
+                    progress_callback(
+                        min(_fetched_stocks[0] + skipped_fresh, len(stock_list)),
+                        len(stock_list), ""
+                    )
+
+        _flush_all_connections()
+        return _fetched_stocks[0], len(stock_list), skipped_fresh
+
+    # ── AkShare: 线程池并行 ──
+    _use_delay = True
 
     def _fetch_one(code: str, name: str) -> bool:
         """单股拉取（增量模式），返回是否成功。"""
-        if _use_delay:
-            time.sleep(random.uniform(FETCH_RANDOM_DELAY_MIN, FETCH_RANDOM_DELAY_MAX))
+        time.sleep(random.uniform(FETCH_RANDOM_DELAY_MIN, FETCH_RANDOM_DELAY_MAX))
         try:
-            # 跳过冗余的新鲜度检查（get_fresh_codes_map 已预过滤）
             df = fetch_stock_data(code, days=days, force_refresh=False,
                                   source=source, skip_fresh_check=True)
             if df is not None and len(df) >= MIN_DAYS_KLINE:
@@ -863,12 +950,6 @@ def fetch_and_cache_stocks_parallel(
         except Exception as e:
             log_error(logger, code, name, e)
             return False
-
-    if total == 0:
-        _flush_all_connections()
-        if progress_callback:
-            progress_callback(len(stock_list), len(stock_list), "")
-        return 0, len(stock_list), skipped_fresh
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_map = {
@@ -886,7 +967,5 @@ def fetch_and_cache_stocks_parallel(
             if progress_callback:
                 progress_callback(completed + skipped_fresh, len(stock_list), code)
 
-    # 最终提交所有剩余未提交的写入
     _flush_all_connections()
-
     return fetched, len(stock_list), skipped_fresh

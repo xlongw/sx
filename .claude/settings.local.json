@@ -25,7 +25,13 @@
       "Bash(powershell *)",
       "Bash(taskkill /F /IM python.exe)",
       "Bash(taskkill /F /IM streamlit.exe)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Bash(cd D:\\\\\\\\xl\\\\\\\\sx)",
+      "WebSearch",
+      "Bash(wait)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl *)",
+      "Bash(sqlite3 *)"
     ]
   }
 }

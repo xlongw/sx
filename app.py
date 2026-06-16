@@ -5,6 +5,9 @@ EMA Crossover Pattern Stock Screening Tool
 启动: streamlit run app.py
 """
 
+import multiprocessing
+multiprocessing.freeze_support()  # Windows 多进程支持（Baostock 并行拉取）
+
 import streamlit as st
 import pandas as pd
 import time

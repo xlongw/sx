@@ -36,7 +36,7 @@ MAX_PARALLEL_FETCHES = 2              # 线程池最大并发数（太高会导�
 FETCH_RANDOM_DELAY_MIN = 0.05         # 请求前随机延迟最小值（秒），串行模式自动跳过
 FETCH_RANDOM_DELAY_MAX = 0.15         # 请求前随机延迟最大值（秒）
 BATCH_COMMIT_SIZE = 50                # 批量提交：每 N 支股票 commit 一次
-BAOSTOCK_MAX_WORKERS = 2              # Baostock 专用并发数（推荐 2，利用 pipeline 隐藏处理时间）
+BAOSTOCK_MP_WORKERS = 3               # Baostock 多进程并发数（每进程独立登录，真正并行拉取）
 
 # ── 数据源选择 ──────────────────────────────────────────
 DATA_SOURCE = "baostock"              # 默认数据源: "baostock" 或 "akshare"
